@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "header": {
+      "name": "Header",
+      "settings": {
+        "paragraph": "Add custom settings for this section. [Learn more](https:\/\/shopify.dev\/themes\/architecture\/settings)"
+      }
+    },
+    "footer": {
+      "name": "Footer",
+      "settings": {
+        "paragraph": "Add custom settings for this section. [Learn more](https:\/\/shopify.dev\/themes\/architecture\/settings)"
+      }
+    }
+  }
+}
