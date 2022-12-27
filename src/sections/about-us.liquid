@@ -1,0 +1,120 @@
+
+{% liquid
+    assign title       = section.settings.title
+    assign description = section.settings.description
+    assign blocks      = section.blocks
+%}
+
+<div id="about-us">
+    <div class="about-us__container">
+        {% if title != blank %}
+            <h1 class="about-us__title">{{ title }}</h1>
+        {% endif %}
+        {% if description != blank %}
+            <div class="about-us__description">{{ description }}</div>
+        {% endif %}
+        <ul class="about-us__list">
+            {% for block in blocks %}
+				{% liquid
+					assign block_title       = block.settings.block_title
+					assign block_description = block.settings.block_description
+					assign block_image       = block.settings.block_image
+					assign block_reverse     = block.settings.block_reverse
+					assign text_align        = block.settings.text_align
+				%}
+
+                <li class="about-us__item {% if block_reverse %}about-us__item--reverse{% endif %}">
+					<div class="about-us__logo">
+						<img src="{{ block_image | img_url: 'master' }}" class="about-us__item-image" alt="{{ block_image.alt | default: block_title }}">
+					</div>
+					<div class="about-us__info">
+						<h3 class="about-us__item-title">{{ block_title }}</h3>
+						<div class="about-us__item-description
+								{% case text_align %}
+									{% when 'right' %}
+									    text-right
+									{% when 'center' %}
+									    text-center
+									{% when 'left' %}
+									    text-left
+								{% endcase %}
+							">{{ block_description }}</div>
+					</div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+{% schema %}
+    {
+        "name": "About us",
+        "settings": [
+            {
+                "type": "text",
+                "id": "title",
+                "label": "Title"
+            },
+            {
+                "type": "richtext",
+                "id": "description",
+                "label": "Description"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "block",
+                "name": "Item",
+                "settings": [
+                    {
+                        "type": "text",
+                        "id": "block_title",
+                        "label": "Title"
+                    },
+					{
+						"type": "richtext",
+						"id": "block_description",
+						"label": "Description"
+					},
+                    {
+                        "type": "image_picker",
+                        "id": "block_image",
+                        "label": "Image"
+                    },
+					{
+						"type": "checkbox",
+						"id": "block_reverse",
+						"label": "Block reverse",
+						"default": false
+					},
+					{
+						"type": "select",
+						"id": "text_align",
+						"label": "Text align",
+						"options": [
+							{
+								"value": "left",
+								"label": "Left"
+							},
+							{
+								"value": "center",
+								"label": "Center"
+							},
+							{
+								"value": "right",
+								"label": "Right"
+							}
+						]
+					}
+				]
+            }
+        ],
+        "presets": [
+            {
+                "name": "About us",
+                "category": "Home page"
+            }
+        ]
+    }
+{% endschema %}
+
