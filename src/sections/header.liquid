@@ -4,6 +4,7 @@
   assign blocks               = section.blocks
   assign logo                 = section.settings.logo_image
   assign advertising          = section.settings.advertising
+  assign active_link          = header_menu.links[0]
 %}
 
 <header class="header">
@@ -46,58 +47,38 @@
 	<div class="header__mobile-menu">
 		<div>
 			<ul class="header__nav-list">
-				<li class="header__nav-item active">Женщинам</li>
-				<li class="header__nav-item">Мужчинам</li>
+				{% for link in header_menu.links %}
+					<li class="header__nav-item {% if forloop.index0 == 0 %}active{% endif %}">
+						{{ link.title | link_to: "#" }}
+					</li>
+				{% endfor %}
 			</ul>
 
 			<div class="container">
 				<ul class="header__submenu-list">
-					<li class="header__submenu-item">
-						<div class="header__submenu-item-title">
-							Одежда
-							<input class="header__submenu-item-input" type="checkbox" id="Одежда">
-							<label class="header__submenu-item-sign" for="Одежда"></label>
-						</div>
-					</li>
-					<li class="header__submenu-item">
-						<input class="header__submenu-item-input" type="checkbox" id="Обувь">
-						<div class="header__submenu-item-title">
-							Обувь
-							<label class="header__submenu-item-sign" for="Обувь">
-								<img class="open" alt="nav opener" src={{ '../assets/submenu-item-open.svg' | asset_url }}>
-								<img class="close" alt="nav opener" src={{ '../assets/submenu-item-close.svg' | asset_url }}>
-							</label>
-						</div>
-						<ul class="header__submenu-item-list">
-							<li class="header__submenu-item-item">Все</li>
-							<li class="header__submenu-item-item">Босоножки</li>
-							<li class="header__submenu-item-item">Ботинки</li>
-							<li class="header__submenu-item-item">Кроссовки</li>
-							<li class="header__submenu-item-item">Сапоги</li>
-							<li class="header__submenu-item-item">Туфли</li>
-						</ul>
-					</li>
-					<li class="header__submenu-item">Аксессуары</li>
-					<li class="header__submenu-item">
-						<div class="header__submenu-item-title">
-							Бренды
-						</div>
-					</li>
-					<li class="header__submenu-item">
-						<div class="header__submenu-item-title">
-							Новые поступления
-						</div>
-					</li>
-					<li class="header__submenu-item">
-						<div class="header__submenu-item-title">
-							Sale
-						</div>
-					</li>
-					<li class="header__submenu-item">
-						<div class="header__submenu-item-title">
-							Наши магазины
-						</div>
-					</li>
+					{% for sub_link in active_link.links %}
+						<li class="header__submenu-item">
+							<input class="header__submenu-item-input" type="checkbox" id={{ sub_link.title }}>
+							<div class="header__submenu-item-title">
+								{{ sub_link.title }}
+								{% if sub_link.links.size > 1 %}
+									<label class="header__submenu-item-sign" for={{ sub_link.title }}>
+										<img class="open" alt="nav opener" src={{ '../assets/submenu-item-open.svg' | asset_url }}>
+										<img class="close" alt="nav opener" src={{ '../assets/submenu-item-close.svg' | asset_url }}>
+									</label>
+								{% endif %}
+							</div>
+							{% if sub_link.links.size > 1 %}
+								<ul class="header__submenu-item-list">
+									{% for sub_link in sub_link.links %}
+										<li class="header__submenu-item-item">
+											{{ sub_link.title | link_to: "#" }}
+										</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</li>
+					{% endfor %}
 				</ul>
 			</div>
 		</div>
@@ -117,8 +98,6 @@
 	</div>
 
 	<div class="header__submenu--wrapper">
-		{% liquid assign active_link = header_menu.links[0] %}
-
 		<div class="header__submenu container">
 			<ul class="header__submenu-list">
 				{% for sub_link in active_link.links %}
