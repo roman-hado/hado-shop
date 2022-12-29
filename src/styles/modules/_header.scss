@@ -281,6 +281,9 @@
 	margin-bottom: 16px;
 	letter-spacing: 0.6px;
 }
+.header__submenu-item-item a {
+	color: $grey-primary;
+}
 .header__submenu-item-sign {
 	position: relative;
 	width: 16px;
