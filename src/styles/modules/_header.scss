@@ -1,5 +1,14 @@
 .header {
+	position: sticky;
+	z-index: 1000;
+	top: 0;
 	color: $black-primary;
+	width: 100%;
+	background-color: #ffffff;
+}
+body:has(.header__nav-icon-toggle:checked) .header {
+	min-height: 100vh;
+	overflow-y: scroll;
 }
 .header__advertising {
 	position: relative;

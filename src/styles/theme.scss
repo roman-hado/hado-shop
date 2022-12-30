@@ -29,4 +29,9 @@ body {
 	font-weight: 400;
 	font-style: normal;
 	overflow-x: hidden;
+	position: relative;
+}
+
+body:has(.header__nav-icon-toggle:checked) {
+	overflow: hidden;
 }
