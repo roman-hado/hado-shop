@@ -254,13 +254,37 @@
 	}
 }
 .header__submenu-item {
-	cursor: pointer;
 	color: $black-primary;
+	line-height: 42px;
 
 	@include for-tablet {
 		width: 100%;
 		line-height: 52px;
 		border-bottom: 1px solid $gray-additional;
+	}
+}
+.header__submenu-item:hover .border-bottom {
+	display: block;
+}
+.border-bottom {
+	position: relative;
+	display: none;
+}
+.border-bottom:before {
+	content: "";
+	position: absolute;
+	bottom: 0;
+	display: block;
+	width: 100%;
+	height: 2px;
+	background-color: $black-primary;
+	border-radius: 5px;
+}
+.header__submenu-item:hover .desktop-sub-menu {
+	display: flex;
+
+	@include for-tablet {
+		display: none;
 	}
 }
 .header__submenu-item-title {
