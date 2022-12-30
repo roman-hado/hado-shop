@@ -125,12 +125,12 @@
 								{% for sub-link in link.links %}
 									<div class="desktop-sub-menu__category">
 										<div class="desktop-sub-menu__category-title">
-											{{ sub-link.title }}
+											{{ sub-link.title | link_to: "#" }}
 										</div>
 										<ul class="desktop-sub-menu__category-list">
 											{% for sub-item in sub-link.links %}
 												<li class="desktop-sub-menu__category-item">
-													{{ sub-item.title }}
+													{{ sub-item.title | link_to: "#" }}
 												</li>
 											{% endfor %}
 										</ul>
@@ -144,7 +144,7 @@
 								<p class="desktop-sub-menu__about-title">
 									{{ collection.title }}
 								</p>
-								<a href="{{ collection.url }}" class="desktop-sub-menu__about-sub-title">
+								<a href="#" class="desktop-sub-menu__about-sub-title">
 									{{ collection_link_text }}
 								</a>
 							</div>

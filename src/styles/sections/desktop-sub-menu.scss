@@ -6,7 +6,7 @@
 	z-index: 2;
 	width: 100vw;
 	background-color: #fff;
-	padding: 19px 164px 40px;
+	padding: 19px 164px 30px;
 	justify-content: space-between;
 	height: max-content;
 }
@@ -39,8 +39,11 @@
 	font-weight: 400;
 	font-size: 14px;
 	line-height: 21px;
-	color: $grey-primary;
 	cursor: pointer;
+}
+
+.desktop-sub-menu__category-item a {
+	color: $grey-primary;
 }
 
 .desktop-sub-menu__category-item:not(:last-child) {
@@ -75,6 +78,7 @@
 	letter-spacing: 0.5px;
 }
 .desktop-sub-menu__about-sub-title {
+	display: block;
 	cursor: pointer;
 	margin-top: 5px;
 	width: max-content;
