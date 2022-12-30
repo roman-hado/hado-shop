@@ -11,6 +11,11 @@
 	text-align: center;
 	line-height: 32px;
 	font-size: 12px;
+
+	@include for-tablet {
+		padding-top: 2px;
+		letter-spacing: 0.4px;
+	}
 }
 .header__advertising--is-active {
 	display: block;
@@ -160,6 +165,7 @@
 }
 .header__basket {
 	display: flex;
+	margin-top: 4px;
 }
 .header__basket--counter {
 	color: $black-primary;

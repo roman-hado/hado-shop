@@ -1,0 +1,81 @@
+.search {
+	display: flex;
+	height: 32px;
+	align-items: center;
+	width: 32px;
+}
+.search-checkbox {
+	display: none;
+}
+.search-logo {
+	margin-left: 10px;
+}
+.search-logo, .search-close-icon {
+	width: 28px;
+	height: 28px;
+	cursor: pointer;
+}
+.search-close-icon {
+	display: none;
+}
+.search-input {
+	display: none;
+	width: 100%;
+	font-size: 12px;
+	padding-left: 7px;
+	outline: none;
+	border: none;
+	color: $grey-primary;
+	padding-top: 2px;
+	letter-spacing: 0.2px;
+
+	@include for-tablet {
+		padding-left: 9px;
+		letter-spacing: 0.1px;
+	}
+}
+.search-input::placeholder {
+	color: $grey-primary;
+}
+.search__img {
+	width: 100%;
+	height: 100%;
+}
+.search-checkbox:checked ~ .header__goods-info .search {
+	padding: 0 7px;
+	min-width: 375px;
+	border: 1px solid $gray-additional;
+
+	@include for-laptop {
+		min-width: 300px;
+	}
+	@include for-tablet {
+		width: 100%;
+		margin-left: 9px;
+	}
+}
+.search-checkbox:checked ~ .header__goods-info {
+	@include for-tablet {
+		width: 100%;
+	}
+}
+.search-checkbox:checked ~ .header__goods-info .search-logo {
+	pointer-events: none;
+	margin-left: 0;
+}
+.search-checkbox:checked ~ .header__goods-info .search-close-icon {
+	display: block;
+}
+.search-checkbox:checked ~ .header__goods-info .search-input {
+	display: block;
+}
+.search-checkbox:checked ~ .header__logo {
+	@include for-tablet {
+		display: none;
+	}
+}
+.search-checkbox:checked ~ .header__nav-opener-wrapper {
+	@include for-tablet {
+		display: none;
+	}
+}

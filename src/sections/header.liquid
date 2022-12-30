@@ -7,13 +7,14 @@
   assign active_link          = header_menu.links[0]
 %}
 
-<header class="header">
+<div class="header">
 	<input class="header__nav-icon-toggle" type="checkbox" id="menu-icon-toggle">
 	<div class="header__advertising {% if advertising %}header__advertising--is-active{% endif %}">
 		Sale 40% на женскую обувь | Бесплатная доставка
 	</div>
 	<div class="header__nav--wrapper">
 		<div class="header__nav container">
+			<input class="search-checkbox" type="checkbox" id="search-panel-toggle">
 			<ul class="header__nav-list">
 				{% for link in header_menu.links %}
 					<li class="header__nav-item {% if forloop.index0 == 0 %}active{% endif %}">
@@ -23,17 +24,24 @@
 			</ul>
 			<div class="header__nav-opener-wrapper">
 				<label class="header__nav-opener" for="menu-icon-toggle">
-					<img class="open" alt="nav opener" src={{ '../assets/header-opener.svg' | asset_url }}>
-					<img class="close" alt="nav opener" src={{ '../assets/menu-close.svg' | asset_url }}>
+					<img class="open" alt="nav opener" src={{ 'header-opener.svg' | asset_url }}>
+					<img class="close" alt="nav opener" src={{ 'menu-close.svg' | asset_url }}>
 				</label>
 			</div>
 			<a class="header__logo" href="#">
 				<img src="{{ logo | img_url: 'master' }}" alt="logo">
 			</a>
 			<div class="header__goods-info">
-				<div class="header__good-info-logo">
-					<img alt="search goods" src={{ '../assets/search-icon.svg' | asset_url }}>
+				<div class="header__goods-search search">
+					<label class="search-logo" for="search-panel-toggle">
+						<img class="search__img" alt="search goods open" src={{ 'search-icon.svg' | asset_url }}>
+					</label>
+					<input class="search-input" type="text" placeholder="Искать товары, бренды...">
+					<label class="search-close-icon" for="search-panel-toggle">
+						<img class="search__img" alt="search goods close" src={{ 'menu-close.svg' | asset_url }}>
+					</label>
 				</div>
+
 				<div class="header__basket">
 					<div class="header__good-info-logo">
 						<img alt="basket of goods" src={{ '../assets/basket-icon.svg' | asset_url }}>
@@ -106,7 +114,7 @@
 			</ul>
 		</div>
 	</div>
-</header>
+</div>
 
 {% schema %}
 {
