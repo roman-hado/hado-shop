@@ -4,7 +4,6 @@
 .header__advertising {
 	position: relative;
 	z-index: 10;
-	display: none;
 	height: 32px;
 	background-color: $black-primary;
 	color: #fff;
@@ -16,9 +15,6 @@
 		padding-top: 2px;
 		letter-spacing: 0.4px;
 	}
-}
-.header__advertising--is-active {
-	display: block;
 }
 .header__nav--wrapper {
 	position: relative;

@@ -4,19 +4,18 @@
   assign collection_link_text = section.settings.collection_link_text
   assign blocks               = section.blocks
   assign logo                 = section.settings.logo_image
-  assign advertising          = section.settings.advertising
-  assign active_link          = header_menu.links[0]
+  assign announcement         = section.settings.announcement
+  assign announcement_title   = section.settings.announcement_title
+  assign pnone_number         = section.settings.phone_number
 %}
-
-<script>
-	console.log({{ section.settings.main-menu | json }});
-</script>
 
 <div class="header">
 	<input class="header__nav-icon-toggle" type="checkbox" id="menu-icon-toggle">
-	<div class="header__advertising {% if advertising %}header__advertising--is-active{% endif %}">
-		Sale 40% на женскую обувь | Бесплатная доставка
-	</div>
+	{% if announcement %}
+		<div class="header__advertising">
+			{{ announcement_title }}
+		</div>
+	{% endif %}
 	<div class="header__nav--wrapper">
 		<div class="header__nav container">
 			<input class="search-checkbox" type="checkbox" id="search-panel-toggle">
@@ -49,7 +48,7 @@
 
 				<div class="header__basket">
 					<div class="header__good-info-logo">
-						<img alt="basket of goods" src={{ '../assets/basket-icon.svg' | asset_url }}>
+						<img alt="basket of goods" src={{ 'basket-icon.svg' | asset_url }}>
 					</div>
 					<div class="header__basket--counter">0</div>
 				</div>
@@ -76,8 +75,8 @@
 								{{ link.title }}
 								{% if link.links[0].links.size > 1 %}
 									<label class="header__submenu-item-sign" for={{ link.title }}>
-										<img class="open" alt="nav opener" src={{ '../assets/submenu-item-open.svg' | asset_url }}>
-										<img class="close" alt="nav opener" src={{ '../assets/submenu-item-close.svg' | asset_url }}>
+										<img class="open" alt="nav opener" src={{ 'submenu-item-open.svg' | asset_url }}>
+										<img class="close" alt="nav opener" src={{ 'submenu-item-close.svg' | asset_url }}>
 									</label>
 								{% endif %}
 							</div>
@@ -100,7 +99,7 @@
 		<div class="header__mobile-menu-params-wrapper">
 			<div class="container header__mobile-menu-params">
 				<div class="header__mobile-menu-phone">
-					+38 056 767 37 88
+					{{ pnone_number }}
 				</div>
 				<div class="header__mobile-menu-langs">
 					<span class="header__mobile-menu-lang active">ru</span>
@@ -166,9 +165,14 @@
   "settings": [
 	{
 	  "type": "checkbox",
-	  "id": "advertising",
-	  "label": "Advertising",
+	  "id": "announcement",
+	  "label": "Announcement",
 	  "default": true
+	},
+	{
+	  "type": "text",
+	  "id": "announcement_title",
+	  "label": "Announcement title"
 	},
     {
       "type": "paragraph",
@@ -194,6 +198,11 @@
       "type": "image_picker",
       "id": "logo_image",
       "label": "Logo"
+	},
+	{
+	  "type": "text",
+	  "id": "phone_number",
+	  "label": "Phone number"
 	}
   ],
   "blocks": [
