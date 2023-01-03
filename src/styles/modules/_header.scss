@@ -261,6 +261,7 @@ body:has(.header__nav-icon-toggle:checked) .header {
 .header__submenu-item {
 	color: $black-primary;
 	line-height: 42px;
+	overflow: hidden;
 
 	@include for-tablet {
 		width: 100%;
@@ -286,7 +287,8 @@ body:has(.header__nav-icon-toggle:checked) .header {
 	border-radius: 5px;
 }
 .header__submenu-item:hover .desktop-sub-menu {
-	display: flex;
+	opacity: 1;
+	visibility: visible;
 
 	@include for-tablet {
 		display: none;
@@ -302,11 +304,16 @@ body:has(.header__nav-icon-toggle:checked) .header {
 .header__submenu-item-list {
 	margin-left: 10px !important;
 	height: 0;
-	display: none;
+	visibility: hidden;
+	opacity: 0;
+	transition-duration: 0.3s;
+	transform: translateY(-100%);
 }
 .header__submenu-item-input:checked ~ .header__submenu-item-list {
 	height: auto;
-	display: block;
+	visibility: visible;
+	opacity: 1;
+	transform: translateY(0);
 }
 .header__submenu-item-item {
 	font-size: 13px;
@@ -324,66 +331,31 @@ body:has(.header__nav-icon-toggle:checked) .header {
 	width: 16px;
 	height: 16px;
 	object-fit: cover;
+	transition-duration: 1s;
 }
 .header__submenu-item-input {
 	display: none;
 }
 .header__submenu-item-sign .open {
 	position: absolute;
-	display: inline-block;
+	visibility: visible;
+	opacity: 1;
+	transition-duration: 0.3s;
 }
 .header__submenu-item-sign .close {
 	position: absolute;
-	display: none;
+	visibility: hidden;
+	opacity: 0;
+	transition-duration: 0.3s;
 }
 .header__submenu-item-input:checked ~ .header__submenu-item-title .open {
-	display: none;
+	visibility: hidden;
+	opacity: 0;
 }
 .header__submenu-item-input:checked ~ .header__submenu-item-title .close {
-	display: inline-block;
+	visibility: visible;
+	opacity: 1;
 }
 .header__submenu-item:not(:last-child) {
 	margin-right: 24px;
 }
-
-
-
-//.mobile-menu {
-//	display: none;
-//	position: fixed;
-//	top: 0;
-//	left: 0;
-//	right: 0;
-//	height: max-content;
-//	z-index: 1;
-//	background-color: $black-primary;
-//	color: #fff;
-//	transform: translateY(-100%);
-//	transition: transform 0.3s;
-//	padding: 24px 0;
-//
-//	@include for-tablet {
-//		display: block;
-//	}
-//}
-//
-//.mobile-menu-close {
-//	display: inline-block;
-//	margin-top: 6px;
-//	font-size: 40px;
-//	font-weight: 400;
-//	transform: rotate(45deg);
-//	color: #fff;
-//}
-//
-//.mobile-menu__item {
-//	font-size: 16px;
-//}
-//
-//.mobile-menu__item {
-//	margin-top: 8px;
-//}
-//
-//.mobile-menu:target {
-//	transform: translateY(0);
-//}

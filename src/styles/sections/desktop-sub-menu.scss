@@ -1,14 +1,17 @@
 .desktop-sub-menu {
 	margin-top: 1px;
 	left: 0;
-	display: none;
+	display: flex;
 	position: absolute;
+	opacity: 0;
+	visibility: hidden;
 	z-index: 2;
 	width: 100vw;
 	background-color: #fff;
 	padding: 19px 164px 30px;
 	justify-content: space-between;
 	height: max-content;
+	transition-duration: 0.3s;
 }
 
 .desktop-sub-menu__categories {
