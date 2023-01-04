@@ -5,10 +5,12 @@
 }
 
 @import 'vendors/normalize';
+@import 'vendors/swiper';
 @import 'base/variables';
 @import 'base/reset';
 @import 'base/typography';
 @import 'base/mixins';
+@import 'base/select';
 
 @import 'modules/header';
 @import 'modules/footer';
@@ -17,6 +19,7 @@
 
 @import 'sections/desktop-sub-menu';
 @import 'sections/about-us';
+@import 'sections/product';
 
 * {
 	padding: 0;

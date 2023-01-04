@@ -115,7 +115,6 @@
 			<ul class="header__submenu-list">
 				{% for link in sub_menu.links %}
 					{% assign collection = blocks[forloop.index0].settings.collection %}
-
 					<li class="header__submenu-item">
 						{{ link.title | link_to: link.url }}
 						<div class="border-bottom"></div>

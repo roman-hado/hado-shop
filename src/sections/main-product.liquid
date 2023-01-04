@@ -1,0 +1,168 @@
+{% liquid
+	assign product_price         = product.price | money_without_trailing_zeros | replace: ',', ' '
+	assign product_compare_price = product.compare_at_price | money_without_trailing_zeros | replace: ',', ' '
+    assign current_variant       = product.selected_or_first_available_variant
+%}
+
+<div id="product">
+	<div class="product__way-wrapper container">
+		<ul class="product__way-list">
+			<li class="product__way-item">
+				Женщинам
+			</li>
+			<li class="product__way-item">
+				<span class="product__way-hug">─</span>
+				Обувь
+			</li>
+			<li class="product__way-item">
+				<span class="product__way-hug">─</span>
+				Туфли
+			</li>
+			<li class="product__way-item">
+				<span class="product__way-hug">─</span>
+				Туфли Jil Sander
+			</li>
+		</ul>
+	</div>
+
+	<div class="product__content">
+		<div class="product__gallery">
+			<div class="swiper mySideBarSwiper product__gallery-list">
+				<div class="swiper-wrapper product__gallery-list-wrapper">
+					{% for media in product.media %}
+						<div class="product__gallery-item swiper-slide">
+							<img alt="{{ media.alt }}" src={{ media.src | img_url: 'master' }}>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+			<div class="swiper myMainSwiper product__main-photo">
+				<div class="swiper-wrapper">
+					{% for media in product.media %}
+						<div class="swiper-slide">
+							<img alt="{{ media.alt }}" src={{ media.src | img_url: 'master' }}>
+						</div>
+					{% endfor %}
+				</div>
+				<div class="swiper-pagination"></div>
+			</div>
+		</div>
+		<div class="product__actions">
+			<div class="product__collection-name">
+				{% for collection in product.collections %}
+					{{ collection.title }}
+				{% endfor %}
+			</div>
+			<div class="product__name">
+				{{ product.title }}
+			</div>
+			<div class="product__code">
+				Артикул: {{ product.variants[0].sku }}
+			</div>
+			<div class="product__price">
+				<div class="product__price-current">
+					{{ product_price | slice: 1, product_price.size }} грн
+				</div>
+				<div class="product__price-previous">
+					{{ product_compare_price | slice: 1, product_compare_price.size }} грн
+				</div>
+			</div>
+			{% form 'product', product, id: 'product-form' %}
+				<div class="product__size">
+					<div class="product__size-title">
+						Размер
+					</div>
+
+					<div class="product__size-select select" id="size-select">
+						<input class="product__id" type="hidden" name="id" value="none">
+						<div class="select__header product__size-select-header">
+							<span class="select__current">Выбрать размер</span>
+							<div class="select__header-img">
+								<img alt="select icon" src={{ "select-icon.svg" | asset_url }} />
+							</div>
+						</div>
+
+						<div class="select__body">
+							{% for variant in product.variants %}
+								<div
+										data-variant-id="{{ variant.id }}"
+										class="select__item select__product-item {% if variant.available == false %}disabled{% endif %}"
+								>
+									{{ variant.title }}
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+
+				<div class="product__action-buttons">
+					<input class="product__action-button black-button" type="submit" value="Добавить в корзину" />
+					<input class="product__action-button" type="submit" value="Оформить заказ" />
+				</div>
+			{% endform %}
+		</div>
+	</div>
+	<div class="container">
+		<div class="product__about">
+			<ul class="product__about-list">
+				{% for field in product.metafields.fields %}
+					{% if field[1] and field[0] %}
+						<li class="product__about-item">
+							<input class="product__about-item-input" type="checkbox" id="{{ field[0] }}">
+							<div class="product__about-title">
+								{{ field[0] }}
+								<label class="product__sub-title-opener" for="{{ field[0] }}">
+									<img class="open" alt="nav opener" src={{ 'submenu-item-open.svg' | asset_url }}>
+									<img class="close" alt="nav opener" src={{ 'submenu-item-close.svg' | asset_url }}>
+								</label>
+							</div>
+							<div class="product__about-sub-title">
+								{% capture string_with_newlines %}
+									{{ field[1] }}
+								{% endcapture %}
+								{{ string_with_newlines | newline_to_br }}
+							</div>
+						</li>
+					{% endif %}
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script type="module">
+	import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js';
+
+	const sideBarSwiper = new Swiper(".mySideBarSwiper", {
+		spaceBetween: 10,
+		slidesPerView: 4,
+		freeMode: true,
+		watchSlidesProgress: true,
+	});
+
+	const mainSwiper = new Swiper(".myMainSwiper", {
+		pagination: {
+			el: ".swiper-pagination",
+			clickable: true
+		},
+		loop: true,
+		thumbs: {
+			swiper: sideBarSwiper,
+		}
+	});
+
+	let productSelectVariants = document.querySelectorAll('.select__product-item');
+
+	function setFormValue() {
+		let select = this.closest('.select');
+		let productId = select.querySelector('.product__id');
+
+		productId.value = this.dataset.variantId;
+	}
+
+	productSelectVariants.forEach(variant =>  {
+		variant.addEventListener('click', setFormValue)
+	});
+</script>
+
+
