@@ -3,10 +3,7 @@
 	assign product_compare_price = product.compare_at_price | money_without_trailing_zeros | replace: ',', ' '
     assign current_variant       = product.selected_or_first_available_variant
 %}
-<script>
-	console.log({{ collections[product.collections[0].handle].products | json }});
-	console.log({{ product | json }});
-</script>
+
 <div id="product">
 	<div class="product__way-wrapper container">
 		<ul class="product__way-list">
@@ -75,7 +72,6 @@
 					<div class="product__size-title">
 						Размер
 					</div>
-
 					<div class="product__size-select select" id="size-select">
 						<input class="product__id" type="hidden" name="id" value="none">
 						<div class="select__header product__size-select-header">
@@ -88,8 +84,8 @@
 						<div class="select__body">
 							{% for variant in product.variants %}
 								<div
-										data-variant-id="{{ variant.id }}"
-										class="select__item select__product-item {% if variant.available == false %}disabled{% endif %}"
+									data-variant-id="{{ variant.id }}"
+									class="select__item select__product-item {% if variant.available == false %}disabled{% endif %}"
 								>
 									{{ variant.title }}
 								</div>
@@ -97,7 +93,10 @@
 						</div>
 					</div>
 				</div>
-
+				<div class="product__error-alert">
+					<img alt="error-icon" src={{ "error-icon.svg" | asset_url }}>
+					<p>Пожалуйста, заполните поле</p>
+				</div>
 				<div class="product__action-buttons">
 					<input class="product__action-button black-button" type="submit" value="Добавить в корзину" />
 					<input class="product__action-button" type="submit" value="Оформить заказ" />
@@ -168,7 +167,22 @@
 </div>
 
 <script type="module">
-	import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js';
+    import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js';
+
+	const productForm = document.querySelector('#product-form');
+	const productId = productForm.querySelector('.product__id');
+	const formErrorAlert = productForm.querySelector('.product__error-alert');
+	let productSelectVariants = document.querySelectorAll('.select__product-item');
+
+	productForm.onsubmit = (e) => {
+		const productIdValue = productId.value;
+
+		if (productIdValue === 'none') {
+			console.log(productIdValue);
+			formErrorAlert.style.display = 'flex';
+			e.preventDefault();
+		}
+	};
 
 	const recommendationSwiper = new Swiper(".recommendation__swiper", {
 		slidesPerView: 2,
@@ -211,13 +225,12 @@
 		}
 	});
 
-	let productSelectVariants = document.querySelectorAll('.select__product-item');
-
 	function setFormValue() {
 		let select = this.closest('.select');
 		let productId = select.querySelector('.product__id');
 
 		productId.value = this.dataset.variantId;
+		formErrorAlert.style.display = 'none';
 	}
 
 	productSelectVariants.forEach(variant =>  {

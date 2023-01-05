@@ -180,7 +180,7 @@
 		}
 	}
 	.product__price {
-		margin-top: 17px;
+		margin-top: 24px;
 		display: flex;
 		font-weight: 700;
 
@@ -248,6 +248,21 @@
 	.select__current {
 		margin-top: 4px;
 		letter-spacing: 0.3px;
+	}
+	.product__error-alert {
+		display: none;
+		height: 18px;
+		color: $red;
+		align-items: center;
+		margin-top: 8px;
+	}
+	.product__error-alert p {
+		height: 18px;
+		margin-left: 5px;
+		font-size: 12px;
+		line-height: 18px;
+		margin-top: 4px;
+		letter-spacing: 0.1px;
 	}
 	.product__action-buttons {
 		margin-top: 32px;
