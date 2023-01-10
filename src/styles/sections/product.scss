@@ -6,6 +6,11 @@
 		padding-top: 16px;
 	}
 
+	@include x-large {
+		max-width: max-content;
+		margin: 0 auto;
+	}
+
 	.product__way-list {
 		display: flex;
 		font-weight: 400;
