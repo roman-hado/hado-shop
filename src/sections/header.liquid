@@ -28,8 +28,8 @@
 			</ul>
 			<div class="header__nav-opener-wrapper">
 				<label class="header__nav-opener" for="menu-icon-toggle">
-					<img class="open" alt="nav opener" src={{ 'header-opener.svg' | asset_url }}>
-					<img class="close" alt="nav opener" src={{ 'menu-close.svg' | asset_url }}>
+					<img src="{{ 'header-opener.svg' | asset_url }}" class="open" alt="nav opener">
+					<img src="{{ 'menu-close.svg' | asset_url }}" class="close" alt="nav opener">
 				</label>
 			</div>
 			<a class="header__logo" href="#">
@@ -38,17 +38,17 @@
 			<div class="header__goods-info">
 				<div class="header__goods-search search">
 					<label class="search-logo" for="search-panel-toggle">
-						<img class="search__img" alt="search goods open" src={{ 'search-icon.svg' | asset_url }}>
+						<img src="{{ 'search-icon.svg' | asset_url }}" class="search__img" alt="search goods open">
 					</label>
 					<input class="search-input" type="text" placeholder="Искать товары, бренды...">
 					<label class="search-close-icon" for="search-panel-toggle">
-						<img class="search__img" alt="search goods close" src={{ 'menu-close.svg' | asset_url }}>
+						<img src="{{ 'menu-close.svg' | asset_url }}" class="search__img" alt="search goods close">
 					</label>
 				</div>
 
 				<div class="header__basket">
 					<div class="header__good-info-logo">
-						<img alt="basket of goods" src={{ 'basket-icon.svg' | asset_url }}>
+						<img src="{{ 'basket-icon.svg' | asset_url }}" alt="basket of goods">
 					</div>
 					<div class="header__basket--counter">0</div>
 				</div>
@@ -70,13 +70,13 @@
 				<ul class="header__submenu-list">
 					{% for link in sub_menu.links %}
 						<li class="header__submenu-item">
-							<input class="header__submenu-item-input" type="checkbox" id={{ link.title }}>
+							<input class="header__submenu-item-input" type="checkbox" id="{{ link.title }}">
 							<div class="header__submenu-item-title">
 								{{ link.title }}
 								{% if link.links[0].links.size > 1 %}
-									<label class="header__submenu-item-sign" for={{ link.title }}>
-										<img class="open" alt="nav opener" src={{ 'submenu-item-open.svg' | asset_url }}>
-										<img class="close" alt="nav opener" src={{ 'submenu-item-close.svg' | asset_url }}>
+									<label class="header__submenu-item-sign" for="{{ link.title }}">
+										<img src="{{ 'submenu-item-open.svg' | asset_url }}" class="open" alt="nav opener">
+										<img src="{{ 'submenu-item-close.svg' | asset_url }}" class="close" alt="nav opener">
 									</label>
 								{% endif %}
 							</div>

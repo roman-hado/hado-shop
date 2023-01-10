@@ -31,7 +31,7 @@
 				<div class="swiper-wrapper product__gallery-list-wrapper">
 					{% for media in product.media %}
 						<div class="product__gallery-item swiper-slide">
-							<img alt="{{ media.alt }}" src={{ media.src | img_url: 'master' }}>
+							<img src="{{ media.src | img_url: 'master' }}" alt="{{ media.alt }}">
 						</div>
 					{% endfor %}
 				</div>
@@ -40,7 +40,7 @@
 				<div class="swiper-wrapper">
 					{% for media in product.media %}
 						<div class="swiper-slide">
-							<img alt="{{ media.alt }}" src={{ media.src | img_url: 'master' }}>
+							<img src="{{ media.src | img_url: 'master' }}" alt="{{ media.alt }}">
 						</div>
 					{% endfor %}
 				</div>
@@ -77,7 +77,7 @@
 						<div class="select__header product__size-select-header">
 							<span class="select__current">Выбрать размер</span>
 							<div class="select__header-img">
-								<img alt="select icon" src={{ "select-icon.svg" | asset_url }} />
+								<img alt="select icon" src="{{ "select-icon.svg" | asset_url }}" />
 							</div>
 						</div>
 
@@ -94,7 +94,7 @@
 					</div>
 				</div>
 				<div class="product__error-alert">
-					<img alt="error-icon" src={{ "error-icon.svg" | asset_url }}>
+					<img alt="error-icon" src="{{ "error-icon.svg" | asset_url }}">
 					<p>Пожалуйста, заполните поле</p>
 				</div>
 				<div class="product__action-buttons">
@@ -114,8 +114,8 @@
 							<div class="product__about-title">
 								{{ field[0] }}
 								<label class="product__sub-title-opener" for="{{ field[0] }}">
-									<img class="open" alt="nav opener" src={{ 'submenu-item-open.svg' | asset_url }}>
-									<img class="close" alt="nav opener" src={{ 'submenu-item-close.svg' | asset_url }}>
+									<img src="{{ 'submenu-item-open.svg' | asset_url }}" class="open" alt="nav opener">
+									<img src="{{ 'submenu-item-close.svg' | asset_url }}" class="close" alt="nav opener">
 								</label>
 							</div>
 							<div class="product__about-sub-title">
