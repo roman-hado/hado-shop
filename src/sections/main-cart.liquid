@@ -1,0 +1,83 @@
+<div id="cart">
+	<div class="container">
+		<div class="cart__title">
+			<h1>
+				Your cart
+			</h1>
+			<a href="#">Continue shoping</a>
+		</div>
+		<div class="cart__content">
+			<div class="cart__content-titles-wrapper">
+				<div class="cart__content-titles">
+					<h2>product</h2>
+					<h2 class="cart__content-price">price</h2>
+				</div>
+				<div class="cart__content-titles">
+					<h2 class="cart__content-quantity">quantity</h2>
+					<h2>total</h2>
+				</div>
+			</div>
+			<div class="cart__line"></div>
+			<div class="cart__product">
+				<div class="cart__product-content">
+					<div class="cart__product-info">
+						<div class="cart__product-logo">
+							<img class="cart__payment-button-logo" src="{{ 'item_logo.png' | asset_url }}" alt="product logo">
+						</div>
+						<div class="cart__product-values">
+							<div class="cart__product-name">
+								Wave
+							</div>
+							<div class="cart__product-size">
+								Size: 38
+							</div>
+						</div>
+					</div>
+
+					<div class="cart__product-price">
+						$215.00
+					</div>
+				</div>
+				<div class="cart__product-actions">
+					<div class="cart__product-quantity">
+						<button class="cart__product-quantity-add cart__product-quantity-button">+</button>
+						<div class="cart__product-quantity-count">
+							1
+						</div>
+						<button class="cart__product-quantity-subtract cart__product-quantity-button">-</button>
+					</div>
+					<div class="cart__product-total">
+						<div class="cart__product-price">
+							$215.00
+						</div>
+						<div class="cart__product-delete">
+							<img src="{{ 'trash.svg' | asset_url }}" class="cart__payment-button-logo" alt="delete product">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="cart__line"></div>
+		</div>
+
+		<div class="cart__payments">
+			<div class="cart__subtotal">
+				<div class="cart__subtotal-title">
+					Subtotal
+				</div>
+				<div class="cart__subtotal-count">
+					$215.00
+				</div>
+			</div>
+			<div class="cart__payments-info">
+				Taxes and shipping calculated at checkout
+			</div>
+			<button class="cart__payment-button cart__payment-button--check-out">Check out</button>
+			<button class="cart__payment-button cart__payment-button--shop-pay">
+				<img class="cart__payment-button-logo" src="{{ 'shop-pay.svg' | asset_url }}" alt="shop pay">
+			</button>
+			<button class="cart__payment-button cart__payment-button--g-pay">
+				<img class="cart__payment-button-logo" src="{{ 'g-pay.svg' | asset_url }}" alt="google pay">
+			</button>
+		</div>
+	</div>
+</div>
