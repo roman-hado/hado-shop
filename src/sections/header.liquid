@@ -1,15 +1,221 @@
-<div>
-  {% comment %}Content for header{% endcomment %}
+{% liquid
+  assign main_menu            = section.settings.main_menu
+  assign sub_menu             = section.settings.sub_menu
+  assign collection_link_text = section.settings.collection_link_text
+  assign blocks               = section.blocks
+  assign logo                 = section.settings.logo_image
+  assign announcement         = section.settings.announcement
+  assign announcement_title   = section.settings.announcement_title
+  assign pnone_number         = section.settings.phone_number
+%}
+
+<div class="header">
+	<input class="header__nav-icon-toggle" type="checkbox" id="menu-icon-toggle">
+	{% if announcement %}
+		<div class="header__advertising">
+			{{ announcement_title }}
+		</div>
+	{% endif %}
+	<div class="header__nav--wrapper">
+		<div class="header__nav container">
+			<input class="search-checkbox" type="checkbox" id="search-panel-toggle">
+			<ul class="header__nav-list">
+				{% for link in main_menu.links %}
+					<li class="header__nav-item {% if forloop.index0 == 0 %}active{% endif %}">
+						{{ link.title | link_to: "#" }}
+					</li>
+				{% endfor %}
+			</ul>
+			<div class="header__nav-opener-wrapper">
+				<label class="header__nav-opener" for="menu-icon-toggle">
+					<img src="{{ 'header-opener.svg' | asset_url }}" class="open" alt="nav opener">
+					<img src="{{ 'menu-close.svg' | asset_url }}" class="close" alt="nav opener">
+				</label>
+			</div>
+			<a class="header__logo" href="#">
+				<img src="{{ logo | img_url: 'master' }}" alt="logo">
+			</a>
+			<div class="header__goods-info">
+				<div class="header__goods-search search">
+					<label class="search-logo" for="search-panel-toggle">
+						<img src="{{ 'search-icon.svg' | asset_url }}" class="search__img" alt="search goods open">
+					</label>
+					<input class="search-input" type="text" placeholder="Искать товары, бренды...">
+					<label class="search-close-icon" for="search-panel-toggle">
+						<img src="{{ 'menu-close.svg' | asset_url }}" class="search__img" alt="search goods close">
+					</label>
+				</div>
+
+				<div class="header__basket">
+					<div class="header__good-info-logo">
+						<img src="{{ 'basket-icon.svg' | asset_url }}" alt="basket of goods">
+					</div>
+					<div class="header__basket--counter">0</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="header__mobile-menu">
+		<div>
+			<ul class="header__nav-list">
+				{% for link in main_menu.links %}
+					<li class="header__nav-item {% if forloop.index0 == 0 %}active{% endif %}">
+						{{ link.title | link_to: "#" }}
+					</li>
+				{% endfor %}
+			</ul>
+
+			<div class="container">
+				<ul class="header__submenu-list">
+					{% for link in sub_menu.links %}
+						<li class="header__submenu-item">
+							<input class="header__submenu-item-input" type="checkbox" id="{{ link.title }}">
+							<div class="header__submenu-item-title">
+								{{ link.title }}
+								{% if link.links[0].links.size > 1 %}
+									<label class="header__submenu-item-sign" for="{{ link.title }}">
+										<img src="{{ 'submenu-item-open.svg' | asset_url }}" class="open" alt="nav opener">
+										<img src="{{ 'submenu-item-close.svg' | asset_url }}" class="close" alt="nav opener">
+									</label>
+								{% endif %}
+							</div>
+
+							{% if link.links[0].links.size > 1 %}
+								<ul class="header__submenu-item-list">
+									{% for sub_link in link.links[0].links %}
+										<li class="header__submenu-item-item">
+											{{ sub_link.title | link_to: "#" }}
+										</li>
+									{% endfor %}
+								</ul>
+							{% endif %}
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="header__mobile-menu-params-wrapper">
+			<div class="container header__mobile-menu-params">
+				<div class="header__mobile-menu-phone">
+					{{ pnone_number }}
+				</div>
+				<div class="header__mobile-menu-langs">
+					<span class="header__mobile-menu-lang active">ru</span>
+					<span class="header__mobile-menu-hug">|</span>
+					<span class="header__mobile-menu-lang">ua</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="header__submenu--wrapper">
+		<div class="header__submenu container">
+			<ul class="header__submenu-list">
+				{% for link in sub_menu.links %}
+					{% assign collection = blocks[forloop.index0].settings.collection %}
+					<li class="header__submenu-item">
+						{{ link.title | link_to: link.url }}
+						<div class="border-bottom"></div>
+						{% if link.links.size > 0 %}
+							<div class="desktop-sub-menu">
+							<div class="desktop-sub-menu__categories">
+								{% for sub-link in link.links %}
+									<div class="desktop-sub-menu__category">
+										<div class="desktop-sub-menu__category-title">
+											{{ sub-link.title | link_to: "#" }}
+										</div>
+										<ul class="desktop-sub-menu__category-list">
+											{% for sub-item in sub-link.links %}
+												<li class="desktop-sub-menu__category-item">
+													{{ sub-item.title | link_to: "#" }}
+												</li>
+											{% endfor %}
+										</ul>
+									</div>
+								{% endfor %}
+							</div>
+							<div class="desktop-sub-menu__about">
+								<div class="desktop-sub-menu__about-logo">
+									<img src="{{ collection.image | img_url: 'master' }}" alt="{{ collection.title }}">
+								</div>
+								<p class="desktop-sub-menu__about-title">
+									{{ collection.title }}
+								</p>
+								<a href="#" class="desktop-sub-menu__about-sub-title">
+									{{ collection_link_text }}
+								</a>
+							</div>
+						</div>
+						{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 </div>
 
 {% schema %}
 {
   "name": "t:sections.header.name",
   "tag": "header",
+  "class": "header",
   "settings": [
+	{
+	  "type": "checkbox",
+	  "id": "announcement",
+	  "label": "Announcement",
+	  "default": true
+	},
+	{
+	  "type": "text",
+	  "id": "announcement_title",
+	  "label": "Announcement title"
+	},
     {
       "type": "paragraph",
       "content": "t:sections.header.settings.paragraph"
+    },
+	{
+	  "type": "link_list",
+	  "id": "main_menu",
+	  "label": "Main menu"
+	},
+    {
+      "type": "link_list",
+      "id": "sub_menu",
+      "label": "Sub-menu"
+    },
+    {
+      "type": "text",
+      "id": "collection_link_text",
+      "label": "Collection link text",
+      "default": "В каталог"
+    },
+	{
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo"
+	},
+	{
+	  "type": "text",
+	  "id": "phone_number",
+	  "label": "Phone number"
+	}
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection",
+          "info": "Коллекции привязанны к [элементам навигации](https://www.shopify.com/admin/menus) в порядке очередности. То есть первая коллекция выведется в выпадающем меню первого элемента навигации. Создайте блок, не выбирая коллекцию, если нет необходимости выводить коллекию в выпадающем меню"
+        }
+      ]
     }
   ]
 }

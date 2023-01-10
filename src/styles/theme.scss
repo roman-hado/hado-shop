@@ -5,16 +5,22 @@
 }
 
 @import 'vendors/normalize';
+@import 'vendors/swiper';
 @import 'base/variables';
 @import 'base/reset';
 @import 'base/typography';
 @import 'base/mixins';
+@import 'base/select';
 
 @import 'modules/header';
 @import 'modules/footer';
+@import 'modules/search';
 @import 'layout/all';
 
+@import 'sections/desktop-sub-menu';
 @import 'sections/about-us';
+@import 'sections/product-slider';
+@import 'sections/product';
 
 * {
 	padding: 0;
@@ -27,4 +33,9 @@ body {
 	font-weight: 400;
 	font-style: normal;
 	overflow-x: hidden;
+	position: relative;
+}
+
+body:has(.header__nav-icon-toggle:checked) {
+	overflow: hidden;
 }

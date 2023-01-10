@@ -7,6 +7,14 @@
 }
 @font-face {
 	font-family: 'Harmonia Sans Pro Cyr';
+	src: url("{{'HarmoniaSansProCyr-SemiBd.ttf' | asset_url }}");
+	font-weight: 600;
+	font-stretch: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Harmonia Sans Pro Cyr';
 	src: url("{{'HarmoniaSansProCyr-Regular.ttf' | asset_url }}");
 	font-weight: 400;
 	font-stretch: normal;

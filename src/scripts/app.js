@@ -9,7 +9,7 @@ import 'Scripts/jquery.plugins.js';
 class App {
 	constructor() {
 		this.init();
-
+		this.customSelect();
 		// ajaxCart.init();
 	}
 
@@ -20,6 +20,39 @@ class App {
 	// JS FOR PDP Additional Products Slider END
 
 	// JS FOR PDP Reviews Slider START
+	customSelect() {
+		let selectHeader = document.querySelectorAll('.select__header');
+		let selectItem = document.querySelectorAll('.select__item');
+
+		selectHeader.forEach(item =>  {
+			item.addEventListener('click', selectToggle)
+		});
+
+		selectItem.forEach(item =>  {
+			item.addEventListener('click', selectChoose)
+		});
+
+		function selectToggle() {
+			this.parentElement.classList.toggle('select--is-active');
+		}
+
+		function selectChoose() {
+			let text = this.innerText;
+			let select = this.closest('.select');
+			let currentText = select.querySelector('.select__current');
+
+			currentText.innerText = text;
+			select.classList.remove('select--is-active');
+		}
+
+		window.addEventListener('click', (e) => {
+			for (const select of document.querySelectorAll('.select')) {
+				if (!select.contains(e.target)) {
+					select.classList.remove('select--is-active');
+				}
+			}
+		});
+	}
 
 	initPdpReviewsSlider() {
 		document.addEventListener('DOMContentLoaded', function() {
