@@ -17,9 +17,11 @@
 					%}
 					<div class="swiper-slide product-slider__slide">
 						<div class="product-slider__good-img">
-							<img alt="{{ product_media.alt }}" src={{ product_media.src | img_url: 'master' }}>
+							<a href="{{ slider_product.url }}">
+								<img alt="{{ product_media.alt }}" src={{ product_media.src | img_url: 'master' }}>
+							</a>
 						</div>
-						<div class="product-slider__good-title">{{ slider_product.title | link_to: '#' }}</div>
+						<div class="product-slider__good-title">{{ slider_product.title | link_to: slider_product.url }}</div>
 						<div class="product-slider__good-collection">{{ slider_product.description }}</div>
 						<div class="product-slider__good-price">{{ product_price | slice: 1, product_price.size }} грн</div>
 					</div>
