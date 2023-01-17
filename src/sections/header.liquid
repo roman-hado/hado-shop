@@ -8,7 +8,6 @@
   assign announcement_title   = section.settings.announcement_title
   assign pnone_number         = section.settings.phone_number
 %}
-
 <div class="header">
 	<input class="header__nav-icon-toggle" type="checkbox" id="menu-icon-toggle">
 	{% if announcement %}
@@ -50,7 +49,7 @@
 					<div class="header__good-info-logo">
 						<img src="{{ 'basket-icon.svg' | asset_url }}" alt="basket of goods">
 					</div>
-					<div class="header__basket--counter">0</div>
+					<div class="header__basket--counter">{{ cart.item_count }}</div>
 				</div>
 			</div>
 		</div>
