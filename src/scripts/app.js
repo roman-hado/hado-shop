@@ -10,6 +10,7 @@ class App {
 	constructor() {
 		this.init();
 		this.customSelect();
+		this.initProductQuantityActions();
 		// ajaxCart.init();
 	}
 
@@ -52,6 +53,87 @@ class App {
 				}
 			}
 		});
+	}
+
+	getResourses = async (url) => {
+		let res = await fetch(url);
+
+		if(!res.ok) {
+			throw new Error(`${res.status}`)
+		}
+
+		return await res.json()
+	}
+
+	updateAjaxCartData() {
+		const cartHeaderQty = document.querySelector('.header__basket--counter');
+		const subtotalPriceDiv = document.querySelector('.cart__subtotal-count');
+		const cartData = this.getResourses('/cart.js')
+
+		cartData.then(cart => {
+			const quantityWrappers = document.querySelectorAll('.cart__product-actions');
+			const subtotalPrice = cart.total_price / 100;
+
+			quantityWrappers.forEach(quantityWrapper => {
+				const variantId = quantityWrapper.getAttribute('data-variant-id');
+				const currVariant = cart.items.find(item => item.id === +variantId);
+				const cartQty = quantityWrapper.querySelector('[data-cart-qty]');
+				const cartTotal = quantityWrapper.querySelector('[data-item-total]');
+				const itemTotalPrice = (currVariant.price * currVariant.quantity / 100);
+
+				cartQty.innerText = currVariant.quantity;
+				cartTotal.innerText = itemTotalPrice.toLocaleString().replace(',', ' ') + ` грн`;
+			});
+
+			subtotalPriceDiv.innerText = subtotalPrice.toLocaleString().replace(',', ' ') + ` грн`;
+			cartHeaderQty.innerText = cart.item_count;
+		});
+	}
+
+	updateCartItemAjax(id, qty) {
+		let $this = this;
+		$.ajax({
+			type: "POST",
+			url: '/cart/update.js',
+			data: {
+				updates: {
+					[`${id}`]: qty
+				}
+			},
+			dataType: 'json',
+			async: false,
+			success: function (cart) {
+				$this.updateAjaxCartData();
+			},
+			error: function (jqXhr, textStatus, errorMessage) {
+				console.log('Error: ' + errorMessage);
+			}
+		});
+	}
+
+	initProductQuantityActions() {
+		const quantityWrappers = document.querySelectorAll('.cart__product-actions');
+
+		quantityWrappers.forEach(quantityWrapper => {
+			const quantityButtons = quantityWrapper.querySelectorAll('.cart__product-quantity-button');
+			const maxQuantity = quantityWrapper.getAttribute('data-max-quantity');
+			const variantId = quantityWrapper.getAttribute('data-variant-id');
+
+			quantityButtons.forEach(button => {
+				button.addEventListener('click', () => {
+					let cartData = this.getResourses('/cart.js');
+					cartData.then(res => {
+						const btnValue = button.getAttribute('data-value');
+						const currItem = res.items.find(item => item.id === +variantId);
+						const newQuantity = currItem.quantity + +btnValue;
+
+						if (+newQuantity > 0 && +newQuantity <= maxQuantity) {
+							this.updateCartItemAjax(variantId, newQuantity)
+						}
+					});
+				})
+			})
+		})
 	}
 
 	initPdpReviewsSlider() {
