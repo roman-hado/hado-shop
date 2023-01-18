@@ -27,7 +27,10 @@
 				{%	assign total_price = item.price | times: item.quantity | money_without_trailing_zeros | replace: ',', ' ' %}
 
 
-				<div class="cart__product">
+				<div
+					 class="cart__product"
+					 data-max-quantity="{{ item.variant.inventory_quantity }}"
+					 data-variant-id="{{ item.variant.id }}">
 					<div class="cart__product-content">
 						<div class="cart__product-info">
 							<div class="cart__product-logo">
@@ -47,11 +50,7 @@
 							{{ item_price | slice: 1, item_price.size }} грн
 						</div>
 					</div>
-					<div
-						class="cart__product-actions"
-						data-max-quantity="{{ item.variant.inventory_quantity }}"
-						data-variant-id={{ item.variant.id }}
-					>
+					<div class="cart__product-actions">
 						<div class="cart__product-quantity">
 							<button class="cart__product-quantity-button" type="button" data-value="+1">+</button>
 							<div class="cart__product-quantity-count" data-cart-qty>

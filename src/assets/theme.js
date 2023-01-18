@@ -603,425 +603,6 @@ try {
 
 /***/ }),
 
-/***/ "./node_modules/@shopify/theme-sections/section.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/@shopify/theme-sections/section.js ***!
-  \*********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Section; });
-var SECTION_ID_ATTR = 'data-section-id';
-
-function Section(container, properties) {
-  this.container = validateContainerElement(container);
-  this.id = container.getAttribute(SECTION_ID_ATTR);
-  this.extensions = [];
-
-  // eslint-disable-next-line es5/no-es6-static-methods
-  Object.assign(this, validatePropertiesObject(properties));
-
-  this.onLoad();
-}
-
-Section.prototype = {
-  onLoad: Function.prototype,
-  onUnload: Function.prototype,
-  onSelect: Function.prototype,
-  onDeselect: Function.prototype,
-  onBlockSelect: Function.prototype,
-  onBlockDeselect: Function.prototype,
-
-  extend: function extend(extension) {
-    this.extensions.push(extension); // Save original extension
-
-    // eslint-disable-next-line es5/no-es6-static-methods
-    var extensionClone = Object.assign({}, extension);
-    delete extensionClone.init; // Remove init function before assigning extension properties
-
-    // eslint-disable-next-line es5/no-es6-static-methods
-    Object.assign(this, extensionClone);
-
-    if (typeof extension.init === 'function') {
-      extension.init.apply(this);
-    }
-  }
-};
-
-function validateContainerElement(container) {
-  if (!(container instanceof Element)) {
-    throw new TypeError(
-      'Theme Sections: Attempted to load section. The section container provided is not a DOM element.'
-    );
-  }
-  if (container.getAttribute(SECTION_ID_ATTR) === null) {
-    throw new Error(
-      'Theme Sections: The section container provided does not have an id assigned to the ' +
-        SECTION_ID_ATTR +
-        ' attribute.'
-    );
-  }
-
-  return container;
-}
-
-function validatePropertiesObject(value) {
-  if (
-    (typeof value !== 'undefined' && typeof value !== 'object') ||
-    value === null
-  ) {
-    throw new TypeError(
-      'Theme Sections: The properties object provided is not a valid'
-    );
-  }
-
-  return value;
-}
-
-// Object.assign() polyfill from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill
-if (typeof Object.assign != 'function') {
-  // Must be writable: true, enumerable: false, configurable: true
-  Object.defineProperty(Object, 'assign', {
-    value: function assign(target) {
-      // .length of function is 2
-      'use strict';
-      if (target == null) {
-        // TypeError if undefined or null
-        throw new TypeError('Cannot convert undefined or null to object');
-      }
-
-      var to = Object(target);
-
-      for (var index = 1; index < arguments.length; index++) {
-        var nextSource = arguments[index];
-
-        if (nextSource != null) {
-          // Skip over if undefined or null
-          for (var nextKey in nextSource) {
-            // Avoid bugs when hasOwnProperty is shadowed
-            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-              to[nextKey] = nextSource[nextKey];
-            }
-          }
-        }
-      }
-      return to;
-    },
-    writable: true,
-    configurable: true
-  });
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/@shopify/theme-sections/theme-sections.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/@shopify/theme-sections/theme-sections.js ***!
-  \****************************************************************/
-/*! exports provided: registered, instances, register, unregister, load, unload, extend, getInstances, getInstanceById, isInstance */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "registered", function() { return registered; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "instances", function() { return instances; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "register", function() { return register; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unregister", function() { return unregister; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "load", function() { return load; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unload", function() { return unload; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "extend", function() { return extend; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInstances", function() { return getInstances; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInstanceById", function() { return getInstanceById; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isInstance", function() { return isInstance; });
-/* harmony import */ var _section__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./section */ "./node_modules/@shopify/theme-sections/section.js");
-/*
- * @shopify/theme-sections
- * -----------------------------------------------------------------------------
- *
- * A framework to provide structure to your Shopify sections and a load and unload
- * lifecycle. The lifecycle is automatically connected to theme editor events so
- * that your sections load and unload as the editor changes the content and
- * settings of your sections.
- */
-
-
-
-var SECTION_TYPE_ATTR = 'data-section-type';
-var SECTION_ID_ATTR = 'data-section-id';
-
-window.Shopify = window.Shopify || {};
-window.Shopify.theme = window.Shopify.theme || {};
-window.Shopify.theme.sections = window.Shopify.theme.sections || {};
-
-var registered = (window.Shopify.theme.sections.registered =
-  window.Shopify.theme.sections.registered || {});
-var instances = (window.Shopify.theme.sections.instances =
-  window.Shopify.theme.sections.instances || []);
-
-function register(type, properties) {
-  if (typeof type !== 'string') {
-    throw new TypeError(
-      'Theme Sections: The first argument for .register must be a string that specifies the type of the section being registered'
-    );
-  }
-
-  if (typeof registered[type] !== 'undefined') {
-    throw new Error(
-      'Theme Sections: A section of type "' +
-        type +
-        '" has already been registered. You cannot register the same section type twice'
-    );
-  }
-
-  function TypedSection(container) {
-    _section__WEBPACK_IMPORTED_MODULE_0__["default"].call(this, container, properties);
-  }
-
-  TypedSection.constructor = _section__WEBPACK_IMPORTED_MODULE_0__["default"];
-  TypedSection.prototype = Object.create(_section__WEBPACK_IMPORTED_MODULE_0__["default"].prototype);
-  TypedSection.prototype.type = type;
-
-  return (registered[type] = TypedSection);
-}
-
-function unregister(types) {
-  types = normalizeType(types);
-
-  types.forEach(function(type) {
-    delete registered[type];
-  });
-}
-
-function load(types, containers) {
-  types = normalizeType(types);
-
-  if (typeof containers === 'undefined') {
-    containers = document.querySelectorAll('[' + SECTION_TYPE_ATTR + ']');
-  }
-
-  containers = normalizeContainers(containers);
-
-  types.forEach(function(type) {
-    var TypedSection = registered[type];
-
-    if (typeof TypedSection === 'undefined') {
-      return;
-    }
-
-    containers = containers.filter(function(container) {
-      // Filter from list of containers because container already has an instance loaded
-      if (isInstance(container)) {
-        return false;
-      }
-
-      // Filter from list of containers because container doesn't have data-section-type attribute
-      if (container.getAttribute(SECTION_TYPE_ATTR) === null) {
-        return false;
-      }
-
-      // Keep in list of containers because current type doesn't match
-      if (container.getAttribute(SECTION_TYPE_ATTR) !== type) {
-        return true;
-      }
-
-      instances.push(new TypedSection(container));
-
-      // Filter from list of containers because container now has an instance loaded
-      return false;
-    });
-  });
-}
-
-function unload(selector) {
-  var instancesToUnload = getInstances(selector);
-
-  instancesToUnload.forEach(function(instance) {
-    var index = instances
-      .map(function(e) {
-        return e.id;
-      })
-      .indexOf(instance.id);
-    instances.splice(index, 1);
-    instance.onUnload();
-  });
-}
-
-function extend(selector, extension) {
-  var instancesToExtend = getInstances(selector);
-
-  instancesToExtend.forEach(function(instance) {
-    instance.extend(extension);
-  });
-}
-
-function getInstances(selector) {
-  var filteredInstances = [];
-
-  // Fetch first element if its an array
-  if (NodeList.prototype.isPrototypeOf(selector) || Array.isArray(selector)) {
-    var firstElement = selector[0];
-  }
-
-  // If selector element is DOM element
-  if (selector instanceof Element || firstElement instanceof Element) {
-    var containers = normalizeContainers(selector);
-
-    containers.forEach(function(container) {
-      filteredInstances = filteredInstances.concat(
-        instances.filter(function(instance) {
-          return instance.container === container;
-        })
-      );
-    });
-
-    // If select is type string
-  } else if (typeof selector === 'string' || typeof firstElement === 'string') {
-    var types = normalizeType(selector);
-
-    types.forEach(function(type) {
-      filteredInstances = filteredInstances.concat(
-        instances.filter(function(instance) {
-          return instance.type === type;
-        })
-      );
-    });
-  }
-
-  return filteredInstances;
-}
-
-function getInstanceById(id) {
-  var instance;
-
-  for (var i = 0; i < instances.length; i++) {
-    if (instances[i].id === id) {
-      instance = instances[i];
-      break;
-    }
-  }
-  return instance;
-}
-
-function isInstance(selector) {
-  return getInstances(selector).length > 0;
-}
-
-function normalizeType(types) {
-  // If '*' then fetch all registered section types
-  if (types === '*') {
-    types = Object.keys(registered);
-
-    // If a single section type string is passed, put it in an array
-  } else if (typeof types === 'string') {
-    types = [types];
-
-    // If single section constructor is passed, transform to array with section
-    // type string
-  } else if (types.constructor === _section__WEBPACK_IMPORTED_MODULE_0__["default"]) {
-    types = [types.prototype.type];
-
-    // If array of typed section constructors is passed, transform the array to
-    // type strings
-  } else if (Array.isArray(types) && types[0].constructor === _section__WEBPACK_IMPORTED_MODULE_0__["default"]) {
-    types = types.map(function(TypedSection) {
-      return TypedSection.prototype.type;
-    });
-  }
-
-  types = types.map(function(type) {
-    return type.toLowerCase();
-  });
-
-  return types;
-}
-
-function normalizeContainers(containers) {
-  // Nodelist with entries
-  if (NodeList.prototype.isPrototypeOf(containers) && containers.length > 0) {
-    containers = Array.prototype.slice.call(containers);
-
-    // Empty Nodelist
-  } else if (
-    NodeList.prototype.isPrototypeOf(containers) &&
-    containers.length === 0
-  ) {
-    containers = [];
-
-    // Handle null (document.querySelector() returns null with no match)
-  } else if (containers === null) {
-    containers = [];
-
-    // Single DOM element
-  } else if (!Array.isArray(containers) && containers instanceof Element) {
-    containers = [containers];
-  }
-
-  return containers;
-}
-
-if (window.Shopify.designMode) {
-  document.addEventListener('shopify:section:load', function(event) {
-    var id = event.detail.sectionId;
-    var container = event.target.querySelector(
-      '[' + SECTION_ID_ATTR + '="' + id + '"]'
-    );
-
-    if (container !== null) {
-      load(container.getAttribute(SECTION_TYPE_ATTR), container);
-    }
-  });
-
-  document.addEventListener('shopify:section:unload', function(event) {
-    var id = event.detail.sectionId;
-    var container = event.target.querySelector(
-      '[' + SECTION_ID_ATTR + '="' + id + '"]'
-    );
-    var instance = getInstances(container)[0];
-
-    if (typeof instance === 'object') {
-      unload(container);
-    }
-  });
-
-  document.addEventListener('shopify:section:select', function(event) {
-    var instance = getInstanceById(event.detail.sectionId);
-
-    if (typeof instance === 'object') {
-      instance.onSelect(event);
-    }
-  });
-
-  document.addEventListener('shopify:section:deselect', function(event) {
-    var instance = getInstanceById(event.detail.sectionId);
-
-    if (typeof instance === 'object') {
-      instance.onDeselect(event);
-    }
-  });
-
-  document.addEventListener('shopify:block:select', function(event) {
-    var instance = getInstanceById(event.detail.sectionId);
-
-    if (typeof instance === 'object') {
-      instance.onBlockSelect(event);
-    }
-  });
-
-  document.addEventListener('shopify:block:deselect', function(event) {
-    var instance = getInstanceById(event.detail.sectionId);
-
-    if (typeof instance === 'object') {
-      instance.onBlockDeselect(event);
-    }
-  });
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/dom7/dist/dom7.modular.js":
 /*!************************************************!*\
   !*** ./node_modules/dom7/dist/dom7.modular.js ***!
@@ -22653,12 +22234,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var _shopify_theme_sections__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @shopify/theme-sections */ "./node_modules/@shopify/theme-sections/theme-sections.js");
-/* harmony import */ var Scripts_ajaxCart__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! Scripts/ajaxCart */ "./src/scripts/templates/ajaxCart.js");
-/* harmony import */ var swiper__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! swiper */ "./node_modules/swiper/js/swiper.esm.bundle.js");
-/* harmony import */ var picturefill__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! picturefill */ "./node_modules/picturefill/dist/picturefill.js");
-/* harmony import */ var picturefill__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(picturefill__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var Scripts_jquery_plugins_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! Scripts/jquery.plugins.js */ "./src/scripts/templates/jquery.plugins.js");
+/* harmony import */ var swiper__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! swiper */ "./node_modules/swiper/js/swiper.esm.bundle.js");
+/* harmony import */ var picturefill__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! picturefill */ "./node_modules/picturefill/dist/picturefill.js");
+/* harmony import */ var picturefill__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(picturefill__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var Scripts_jquery_plugins_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! Scripts/jquery.plugins.js */ "./src/scripts/templates/jquery.plugins.js");
 
 
 
@@ -22667,9 +22246,6 @@ function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol 
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-
-
-// import cart from 'Scripts/cart';
 
 
 
@@ -22709,10 +22285,44 @@ var App = /*#__PURE__*/function () {
         return _ref.apply(this, arguments);
       };
     }());
+    _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_3___default()(this, "removeCartItem", /*#__PURE__*/function () {
+      var _ref2 = _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0___default()( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_4___default.a.mark(function _callee2(id) {
+        var item, res;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_4___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                item = JSON.stringify({
+                  updates: _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_3___default()({}, "".concat(id), 0)
+                });
+                _context2.next = 3;
+                return fetch('/cart/update.js', {
+                  method: 'POST',
+                  headers: {
+                    'Content-type': 'application/json'
+                  },
+                  body: item
+                });
+              case 3:
+                res = _context2.sent;
+                _context2.next = 6;
+                return res.json();
+              case 6:
+                return _context2.abrupt("return", _context2.sent);
+              case 7:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }));
+      return function (_x2) {
+        return _ref2.apply(this, arguments);
+      };
+    }());
     this.init();
     this.customSelect();
     this.initProductQuantityActions();
-    // ajaxCart.init();
   }
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(App, [{
     key: "init",
@@ -22768,7 +22378,7 @@ var App = /*#__PURE__*/function () {
       var subtotalPriceDiv = document.querySelector('.cart__subtotal-count');
       var cartData = this.getResourses('/cart.js');
       cartData.then(function (cart) {
-        var quantityWrappers = document.querySelectorAll('.cart__product-actions');
+        var quantityWrappers = document.querySelectorAll('.cart__product');
         var subtotalPrice = cart.total_price / 100;
         quantityWrappers.forEach(function (quantityWrapper) {
           var variantId = quantityWrapper.getAttribute('data-variant-id');
@@ -22809,7 +22419,7 @@ var App = /*#__PURE__*/function () {
     key: "initProductQuantityActions",
     value: function initProductQuantityActions() {
       var _this = this;
-      var quantityWrappers = document.querySelectorAll('.cart__product-actions');
+      var quantityWrappers = document.querySelectorAll('.cart__product');
       quantityWrappers.forEach(function (quantityWrapper) {
         var quantityButtons = quantityWrapper.querySelectorAll('.cart__product-quantity-button');
         var maxQuantity = quantityWrapper.getAttribute('data-max-quantity');
@@ -22826,6 +22436,12 @@ var App = /*#__PURE__*/function () {
               if (+newQuantity > 0 && +newQuantity <= maxQuantity) {
                 _this.updateCartItemAjax(variantId, newQuantity);
               }
+              if (+newQuantity === 0) {
+                _this.removeCartItem(variantId).then(function () {
+                  _this.updateAjaxCartData();
+                  quantityWrapper.remove();
+                });
+              }
             });
           });
         });
@@ -22835,7 +22451,7 @@ var App = /*#__PURE__*/function () {
     key: "initPdpReviewsSlider",
     value: function initPdpReviewsSlider() {
       document.addEventListener('DOMContentLoaded', function () {
-        var pdpReviewSlider = new swiper__WEBPACK_IMPORTED_MODULE_8__["default"](".pdp-reviews-slider", {
+        var pdpReviewSlider = new swiper__WEBPACK_IMPORTED_MODULE_6__["default"](".pdp-reviews-slider", {
           breakpoints: {
             320: {
               slidesPerView: 1.3,
@@ -22872,293 +22488,6 @@ var App = /*#__PURE__*/function () {
 }();
 var app = new App();
 window.app = app;
-
-/***/ }),
-
-/***/ "./src/scripts/templates/ajaxCart.js":
-/*!*******************************************!*\
-  !*** ./src/scripts/templates/ajaxCart.js ***!
-  \*******************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* WEBPACK VAR INJECTION */(function($) {/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/defineProperty.js");
-/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/classCallCheck.js");
-/* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babel/runtime/helpers/createClass */ "./node_modules/@babel/runtime/helpers/createClass.js");
-/* harmony import */ var _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2__);
-
-
-
-var AjaxCart = /*#__PURE__*/function () {
-  function AjaxCart() {
-    _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1___default()(this, AjaxCart);
-    this.init();
-  }
-  _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(AjaxCart, [{
-    key: "init",
-    value: function init() {
-      var $this = this;
-      var button = document.querySelector('.hero__btn');
-      if (button) {
-        button.addEventListener('click', function (e) {
-          e.preventDefault();
-          var a = '31353934839889';
-          $this.addCartItemAjax(a, 1);
-          $this.renderAjaxCartItems();
-        });
-      }
-      this.addToCartPdp();
-      this.addToCartInCollection();
-      this.addCartOpenerListener();
-      this.addChangeProductsQtyListeners();
-      this.checkIfCartEmpty();
-      this.addRemoveListeners();
-    }
-  }, {
-    key: "updateAjaxCartData",
-    value: function updateAjaxCartData() {
-      var cartQty = document.querySelector('[data-ajax-cart-qty]');
-      var cartHeaderQty = document.querySelector('.cart-count');
-      var cartTotal = document.querySelector('[data-ajax-cart-total]');
-      var cartData = this.getCartItemsAjax();
-      cartData.done(function (cart) {
-        console.log(cart);
-        cartQty.innerText = cart.item_count;
-        cartHeaderQty.innerText = cart.item_count;
-        cartTotal.innerText = '$' + cart.total_price / 100;
-      });
-    }
-  }, {
-    key: "checkIfCartEmpty",
-    value: function checkIfCartEmpty() {
-      var cartItemsWrapper = document.querySelector('#cart-drawer .cart__inner');
-      var cartData = this.getCartItemsAjax();
-      cartData.done(function (cart) {
-        if (cart.item_count > 0) {
-          if (cartItemsWrapper.classList.contains('empty')) {
-            cartItemsWrapper.classList.remove('empty');
-          }
-        } else {
-          cartItemsWrapper.classList.add('empty');
-        }
-      });
-    }
-
-    // LISTENERS -------------------
-  }, {
-    key: "addToCartPdp",
-    value: function addToCartPdp() {
-      var $this = this;
-      var allAtcItems = document.querySelectorAll('[data-add-to-cart]');
-      if (allAtcItems) {
-        allAtcItems.forEach(function (el) {
-          el.addEventListener('click', function (e) {
-            e.preventDefault();
-            var qty = e.target.closest('.product__form').querySelector('[data-cart-item-qty]').value;
-            var id = e.target.dataset.id;
-            console.log('ATC Event', qty, id);
-            $this.addCartItemAjax(id, qty);
-            $this.renderAjaxCartItems();
-          });
-        });
-      }
-    }
-  }, {
-    key: "addToCartInCollection",
-    value: function addToCartInCollection() {
-      var $this = this;
-      var allAtcItems = document.querySelectorAll('[data-add-to-cart-collection]');
-      if (allAtcItems) {
-        allAtcItems.forEach(function (el) {
-          el.addEventListener('click', function (e) {
-            e.preventDefault();
-            $this.addCartItemAjax(e.target.dataset.id, 1);
-            $this.renderAjaxCartItems();
-          });
-        });
-      }
-    }
-  }, {
-    key: "addCartOpenerListener",
-    value: function addCartOpenerListener() {
-      var cartOpener = document.querySelector('#open-cart');
-      var $this = this;
-      cartOpener.addEventListener('click', function () {
-        $this.updateAjaxCartData();
-      });
-    }
-  }, {
-    key: "addChangeProductsQtyListeners",
-    value: function addChangeProductsQtyListeners() {
-      var items = document.querySelectorAll('.cart__items .cart__item');
-      var $this = this;
-      items.forEach(function (el) {
-        var oldValue = el.querySelector('[data-cart-item-qty]').value;
-        el.querySelector('[data-cart-item-qty]').addEventListener('change', function (e) {
-          var id = e.target.dataset.id;
-          var qty = e.target.value;
-          $this.updateCartItemAjax(id, qty);
-        });
-      });
-    }
-  }, {
-    key: "addRemoveListeners",
-    value: function addRemoveListeners() {
-      var allItemsInCart = document.querySelectorAll('.cart__item');
-      var $this = this;
-      allItemsInCart.forEach(function (el) {
-        el.querySelector('.cart__product-remove').addEventListener('click', function (e) {
-          e.preventDefault();
-          var id = e.target.closest('.cart__product-remove').dataset.id;
-          var itemsWrapperLength = document.querySelectorAll('.cart__items .cart__item').length;
-          $this.removeCartItemAjax(id, el);
-          setTimeout(function () {
-            if (itemsWrapperLength == 1) {
-              $this.checkIfCartEmpty();
-            }
-            $this.updateAjaxCartData();
-          }, 2000);
-        });
-      });
-    }
-
-    // RENDERS ---------------------
-  }, {
-    key: "renderAjaxCartItems",
-    value: function renderAjaxCartItems() {
-      var $this = this;
-      var cartData = this.getCartItemsAjax();
-      cartData.done(function (cart) {
-        var itemsHtml = '';
-        var itemsWrapperHtml = document.querySelector('.cart__inner .cart__items');
-        var cartOpener = document.querySelector('#open-cart');
-        cart.items.forEach(function (el, index) {
-          itemsHtml += $this.renderCart(el, index);
-        });
-        itemsWrapperHtml.innerHTML = '';
-        $this.checkIfCartEmpty();
-        cartOpener.click();
-        setTimeout(function () {
-          itemsWrapperHtml.innerHTML = itemsHtml;
-          $this.addRemoveListeners();
-          $this.addChangeProductsQtyListeners();
-        }, 600);
-      });
-    }
-  }, {
-    key: "renderCart",
-    value: function renderCart(cartObject, index) {
-      var qtyHtml = '';
-      var comparePrice = '';
-      qtyHtml += "\n\t\t\t<option value=\"".concat(cartObject.quantity, "\" >").concat(cartObject.quantity, "</option>\n\t\t");
-      for (var i = 1; i < 25; i++) {
-        if (i == cartObject.quantity) {
-          qtyHtml += "\n\t\t\t\t\t<option value=\"".concat(i, "\" selected>").concat(i, "</option>\n\t\t\t\t");
-        } else {
-          qtyHtml += "\n\t\t\t\t\t<option value=\"".concat(i, "\">").concat(i, "</option>\n\t\t\t\t");
-        }
-      }
-      if (cartObject.price != cartObject.discounted_price) {
-        comparePrice += "\n\t\t\t\t<div class=\"old\">$".concat(cartObject.discounted_price / 100, "</div>\n\t\t\t");
-      }
-
-      //<div class="new">$${(cartObject.price * cartObject.quantity) / 100}</div>
-
-      var itemHtml = "<div class=\"cart__item animate__animated animate__fadeInLeft animate__delay-".concat(index + 1, "s\"\n\t\t\t  data-id=\"").concat(cartObject.id, "\">\n\t\t\t <div class=\"product__img\">\n\t\t\t  <a href=\"\" class=\"product__img-link\">\n\t\t\t   <img src=\"").concat(cartObject.image, "\"\n\t\t\t\t alt=\"product image\">\n\t\t\t  </a>\n\t\t\t </div>\n\t\t\t <div class=\"product__info\">\n\t\t\t  <a href=\"\" class=\"product__title-link\">\n\t\t\t   <div class=\"product__title\">").concat(cartObject.title, "</div>\n\t\t\t  </a>\n\t\t\t  <div class=\"product__counter\">\n\t\t\t   <select class=\"product__counter-select\"\n\t\t\t\t data-cart-item-qty data-id=\"").concat(cartObject.id, "\">\n\t\t\t\t ").concat(qtyHtml, "\n\t\t\t   </select>\n\t\t\t  </div>\n\t\t\t </div>\n\t\t\t <div class=\"product__price\">\n\t\t\t  \n\t\t\t  <div class=\"new\">$").concat(cartObject.price / 100, "</div>\n\t\t\t </div>\n\t\t\t <button class=\"cart__product-remove\"\n\t\t\t   data-id=\"").concat(cartObject.id, "\">\n\t\t\t  <svg width=\"18\" height=\"13\" viewBox=\"0 0 18 13\"\n\t\t\t\tfill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n\t\t\t   <path\n\t\t\t\td=\"M14.8736 0.87459L4.26701 11.4812M14.8736 11.4812L4.26701 0.874589\"\n\t\t\t\tstroke=\"#0F0F0F\" stroke-width=\"2\"/>\n\t\t\t  </svg>\n\t\t\t </button>\n\t\t\t</div>");
-      return itemHtml;
-    }
-
-    // AJAX REQUESTS ---------------
-  }, {
-    key: "getCartItemsAjax",
-    value: function getCartItemsAjax() {
-      return $.ajax({
-        type: 'GET',
-        url: '/cart.js',
-        dataType: 'json',
-        async: false
-      });
-    }
-  }, {
-    key: "clearCartItemsAjax",
-    value: function clearCartItemsAjax() {
-      $.ajax({
-        type: "POST",
-        url: '/cart/clear.js',
-        data: '',
-        dataType: 'json',
-        success: function success() {}
-      });
-    }
-  }, {
-    key: "removeCartItemAjax",
-    value: function removeCartItemAjax(id, el) {
-      $.ajax({
-        type: "POST",
-        url: '/cart/update.js',
-        data: {
-          updates: _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()({}, "".concat(id), 0)
-        },
-        dataType: 'json',
-        success: function success() {
-          el.classList.add('animate__fadeOutLeft');
-          el.addEventListener('animationend', function () {
-            el.remove();
-          });
-        }
-      });
-    }
-  }, {
-    key: "addCartItemAjax",
-    value: function addCartItemAjax(id, qty) {
-      $.ajax({
-        type: "POST",
-        url: '/cart/add.js',
-        async: false,
-        data: {
-          items: [{
-            id: id,
-            quantity: qty
-          }]
-        },
-        dataType: 'json',
-        success: function success() {}
-      });
-    }
-  }, {
-    key: "updateCartItemAjax",
-    value: function updateCartItemAjax(id, qty) {
-      var $this = this;
-      $.ajax({
-        type: "POST",
-        url: '/cart/update.js',
-        async: false,
-        data: {
-          updates: _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0___default()({}, "".concat(id), qty)
-        },
-        dataType: 'json',
-        success: function success(cart) {
-          $this.updateAjaxCartData();
-        },
-        error: function error(jqXhr, textStatus, errorMessage) {
-          console.log('Error: ' + errorMessage);
-        }
-      });
-    }
-  }]);
-  return AjaxCart;
-}();
-var ajaxCartInit = {
-  init: function init() {
-    window.ajaxCartClass = new AjaxCart();
-  }
-};
-/* harmony default export */ __webpack_exports__["default"] = (ajaxCartInit);
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js")))
 
 /***/ }),
 

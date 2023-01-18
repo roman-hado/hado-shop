@@ -1,7 +1,4 @@
 import $ from 'jquery';
-import {load} from '@shopify/theme-sections';
-// import cart from 'Scripts/cart';
-import ajaxCart from 'Scripts/ajaxCart';
 import Swiper from 'swiper';
 import 'picturefill';
 import 'Scripts/jquery.plugins.js';
@@ -11,7 +8,6 @@ class App {
 		this.init();
 		this.customSelect();
 		this.initProductQuantityActions();
-		// ajaxCart.init();
 	}
 
 	init() {
@@ -71,7 +67,7 @@ class App {
 		const cartData = this.getResourses('/cart.js')
 
 		cartData.then(cart => {
-			const quantityWrappers = document.querySelectorAll('.cart__product-actions');
+			const quantityWrappers = document.querySelectorAll('.cart__product');
 			const subtotalPrice = cart.total_price / 100;
 
 			quantityWrappers.forEach(quantityWrapper => {
@@ -111,8 +107,22 @@ class App {
 		});
 	}
 
+	removeCartItem = async (id) => {
+		const item = JSON.stringify({updates: {[`${id}`]: 0}});
+
+		const res = await fetch('/cart/update.js', {
+			method: 'POST',
+			headers: {
+				'Content-type': 'application/json'
+			},
+			body: item,
+		});
+
+		return await res.json();
+	}
+
 	initProductQuantityActions() {
-		const quantityWrappers = document.querySelectorAll('.cart__product-actions');
+		const quantityWrappers = document.querySelectorAll('.cart__product');
 
 		quantityWrappers.forEach(quantityWrapper => {
 			const quantityButtons = quantityWrapper.querySelectorAll('.cart__product-quantity-button');
@@ -129,6 +139,14 @@ class App {
 
 						if (+newQuantity > 0 && +newQuantity <= maxQuantity) {
 							this.updateCartItemAjax(variantId, newQuantity)
+						}
+
+						if (+newQuantity === 0) {
+							this.removeCartItem(variantId)
+								.then(() => {
+									this.updateAjaxCartData();
+									quantityWrapper.remove();
+								});
 						}
 					});
 				})
