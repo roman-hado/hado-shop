@@ -23,10 +23,18 @@
 @import 'sections/product';
 @import 'sections/cart';
 
+@import "snippets/ajax-cart";
+
 * {
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
+}
+
+html {
+	@include for-tablet {
+		overflow-x: hidden;
+	}
 }
 
 body {

@@ -9,6 +9,7 @@
   assign pnone_number         = section.settings.phone_number
 %}
 <div class="header">
+	{{ ajaxcart_link }}
 	<input class="header__nav-icon-toggle" type="checkbox" id="menu-icon-toggle">
 	{% if announcement %}
 		<div class="header__advertising">
@@ -45,12 +46,12 @@
 					</label>
 				</div>
 
-				<a href="/cart" class="header__basket">
+				<div class="header__basket">
 					<div class="header__good-info-logo">
 						<img src="{{ 'basket-icon.svg' | asset_url }}" alt="basket of goods">
 					</div>
 					<div class="header__basket--counter">{{ cart.item_count }}</div>
-				</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -153,7 +154,23 @@
 			</ul>
 		</div>
 	</div>
+
+	{% include "ajax-cart" %}
 </div>
+
+<script>
+	const ajaxCartOpener = document.querySelector('.header__good-info-logo');
+	const cartPanel = document.querySelector('#ajax-cart');
+
+	ajaxCartOpener.addEventListener('click', () => {
+		if (cartPanel.classList.contains('is-opened')) {
+			cartPanel.style.transform = 'translateX(100%)';
+		} else {
+			cartPanel.style.transform = 'translateX(0)';
+		}
+		cartPanel.classList.toggle('is-opened');
+	});
+</script>
 
 {% schema %}
 {

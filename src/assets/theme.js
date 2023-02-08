@@ -22323,6 +22323,8 @@ var App = /*#__PURE__*/function () {
     this.init();
     this.customSelect();
     this.initProductQuantityActions();
+    this.initRemoveItemAction();
+    this.initAddProductAction();
   }
   _babel_runtime_helpers_createClass__WEBPACK_IMPORTED_MODULE_2___default()(App, [{
     key: "init",
@@ -22374,24 +22376,28 @@ var App = /*#__PURE__*/function () {
   }, {
     key: "updateAjaxCartData",
     value: function updateAjaxCartData() {
+      var _this = this;
       var cartHeaderQty = document.querySelector('.header__basket--counter');
-      var subtotalPriceDiv = document.querySelector('.cart__subtotal-count');
+      var totalPriceDiv = document.querySelector('.ajax-cart__products-price--count');
+      var subTotalPriceDiv = document.querySelector('.ajax-cart__total-price--count');
       var cartData = this.getResourses('/cart.js');
+      var deliveryPrice = 60;
       cartData.then(function (cart) {
-        var quantityWrappers = document.querySelectorAll('.cart__product');
+        var quantityWrappers = document.querySelectorAll('.ajax-cart__product');
         var subtotalPrice = cart.total_price / 100;
-        quantityWrappers.forEach(function (quantityWrapper) {
-          var variantId = quantityWrapper.getAttribute('data-variant-id');
-          var currVariant = cart.items.find(function (item) {
-            return item.id === +variantId;
+        cart.items.forEach(function (item) {
+          var wrapper = Array.from(quantityWrappers).find(function (w) {
+            return +w.getAttribute('data-variant-id') === item.id;
           });
-          var cartQty = quantityWrapper.querySelector('[data-cart-qty]');
-          var cartTotal = quantityWrapper.querySelector('[data-item-total]');
-          var itemTotalPrice = currVariant.price * currVariant.quantity / 100;
-          cartQty.innerText = currVariant.quantity;
-          cartTotal.innerText = itemTotalPrice.toLocaleString().replace(',', ' ') + " \u0433\u0440\u043D";
+          if (wrapper) {
+            var cartQty = wrapper.querySelector('[data-cart-qty]');
+            cartQty.innerText = item.quantity;
+          } else {
+            _this.createCartProduct(item);
+          }
         });
-        subtotalPriceDiv.innerText = subtotalPrice.toLocaleString().replace(',', ' ') + " \u0433\u0440\u043D";
+        totalPriceDiv.innerText = subtotalPrice.toLocaleString().replace(',', ' ') + " \u0433\u0440\u043D";
+        subTotalPriceDiv.innerText = (subtotalPrice + deliveryPrice).toLocaleString().replace(',', ' ') + " \u0433\u0440\u043D";
         cartHeaderQty.innerText = cart.item_count;
       });
     }
@@ -22407,7 +22413,7 @@ var App = /*#__PURE__*/function () {
         },
         dataType: 'json',
         async: false,
-        success: function success(cart) {
+        success: function success() {
           $this.updateAjaxCartData();
         },
         error: function error(jqXhr, textStatus, errorMessage) {
@@ -22416,17 +22422,70 @@ var App = /*#__PURE__*/function () {
       });
     }
   }, {
+    key: "createCartProduct",
+    value: function createCartProduct(productData) {
+      var productsList = document.querySelector('.ajax-cart__products-list');
+      var price = (productData.price / 100).toLocaleString().replace(',', ' ');
+      var newProduct = "\n\t\t\t<li\n\t\t\t\tclass=\"ajax-cart__product\"\n\t\t\t\tdata-max-quantity=1\n\t\t\t\tdata-variant-id=".concat(productData.id, "\n\t\t\t>\n\t\t\t\t<div class=\"ajax-cart__product-logo\">\n\t\t\t\t\t<img src=").concat(productData.image, " alt=").concat(productData.image, ">\n\t\t\t\t</div>\n\t\t\t\t<div class=\"ajax-cart__product-info\">\n\t\t\t\t\t<div class=\"ajax-cart__product-title\">").concat(productData.product_title, "</div>\n\t\t\t\t\t<div class=\"ajax-cart__product-size\">\u0420\u043E\u0437\u043C\u0456\u0440: ").concat(productData.variant_title, "</div>\n\t\t\t\t\t<div class=\"ajax-cart__product-price\">").concat(price, " \u0433\u0440\u043D</div>\n\n\t\t\t\t\t<div class=\"ajax-cart_product-quantity\">\n\t\t\t\t\t\t<button class=\"ajax-cart__quantity-button\" type=\"button\" data-value=\"-1\">-</button>\n\t\t\t\t\t\t<div data-cart-qty>").concat(productData.quantity, "</div>\n\t\t\t\t\t\t<button class=\"ajax-cart__quantity-button\" type=\"button\" data-value=\"+1\">+</button>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"ajax-cart__product-delete\" data-variant-id=").concat(productData.id, ">\n\t\t\t\t\t<svg width=\"20\" height=\"21\" viewBox=\"0 0 20 21\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n\t\t\t\t\t\t\t<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M1.875 5.5C1.875 5.15482 2.15482 4.875 2.5 4.875H17.5C17.8452 4.875 18.125 5.15482 18.125 5.5C18.125 5.84518 17.8452 6.125 17.5 6.125H2.5C2.15482 6.125 1.875 5.84518 1.875 5.5Z\" fill=\"#959595\"></path>\n\t\t\t\t\t\t\t<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M8.33329 2.7915C8.05703 2.7915 7.79207 2.90125 7.59672 3.0966C7.40137 3.29195 7.29163 3.5569 7.29163 3.83317V4.87484H12.7083V3.83317C12.7083 3.5569 12.5985 3.29195 12.4032 3.0966C12.2078 2.90125 11.9429 2.7915 11.6666 2.7915H8.33329ZM13.9583 4.87484V3.83317C13.9583 3.22538 13.7169 2.64249 13.2871 2.21272C12.8573 1.78295 12.2744 1.5415 11.6666 1.5415H8.33329C7.72551 1.5415 7.14261 1.78295 6.71284 2.21272C6.28307 2.64249 6.04163 3.22538 6.04163 3.83317V4.87484H4.16663C3.82145 4.87484 3.54163 5.15466 3.54163 5.49984V17.1665C3.54163 17.7743 3.78307 18.3572 4.21284 18.787C4.64261 19.2167 5.2255 19.4582 5.83329 19.4582H14.1666C14.7744 19.4582 15.3573 19.2167 15.7871 18.787C16.2169 18.3572 16.4583 17.7743 16.4583 17.1665V5.49984C16.4583 5.15466 16.1785 4.87484 15.8333 4.87484H13.9583ZM4.79163 6.12484V17.1665C4.79163 17.4428 4.90137 17.7077 5.09672 17.9031C5.29207 18.0984 5.55703 18.2082 5.83329 18.2082H14.1666C14.4429 18.2082 14.7078 18.0984 14.9032 17.9031C15.0985 17.7077 15.2083 17.4428 15.2083 17.1665V6.12484H4.79163Z\" fill=\"#959595\"></path>\n\t\t\t\t\t\t\t<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M11.6666 9.0415C12.0118 9.0415 12.2916 9.32133 12.2916 9.6665V14.6665C12.2916 15.0117 12.0118 15.2915 11.6666 15.2915C11.3214 15.2915 11.0416 15.0117 11.0416 14.6665V9.6665C11.0416 9.32133 11.3214 9.0415 11.6666 9.0415Z\" fill=\"#959595\"></path>\n\t\t\t\t\t\t\t<path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M8.33337 9.0415C8.67855 9.0415 8.95837 9.32133 8.95837 9.6665V14.6665C8.95837 15.0117 8.67855 15.2915 8.33337 15.2915C7.9882 15.2915 7.70837 15.0117 7.70837 14.6665V9.6665C7.70837 9.32133 7.9882 9.0415 8.33337 9.0415Z\" fill=\"#959595\"></path>\n\t\t\t\t\t</svg>\n\t\t\t\t</div>\n\t\t\t</li>\n\t\t");
+      productsList.innerHTML += newProduct;
+      this.initRemoveItemAction();
+      this.initProductQuantityActions();
+    }
+  }, {
+    key: "initRemoveItemAction",
+    value: function initRemoveItemAction() {
+      var _this2 = this;
+      var deleteItemButtons = document.querySelectorAll('.ajax-cart__product-delete');
+      deleteItemButtons.forEach(function (deleteItemButton) {
+        deleteItemButton.addEventListener('click', function () {
+          var itemWrapper = deleteItemButton.closest('.ajax-cart__product');
+          var itemId = deleteItemButton.getAttribute('data-variant-id');
+          _this2.removeCartItem(itemId).then(function () {
+            _this2.updateAjaxCartData();
+            itemWrapper.remove();
+          });
+        });
+      });
+    }
+  }, {
+    key: "initAddProductAction",
+    value: function initAddProductAction() {
+      var _this3 = this;
+      var productForm = document.querySelector('#product-form');
+      if (!productForm) return;
+      var formErrorAlert = productForm.querySelector('.product__error-alert');
+      productForm.onsubmit = function (e) {
+        e.preventDefault();
+        var productId = productForm.querySelector('.product__id');
+        var productIdValue = productId.value;
+        if (productIdValue === 'none') {
+          formErrorAlert.style.display = 'flex';
+          return;
+        }
+        var ajaxCart = document.querySelector('#ajax-cart');
+        var cartData = _this3.getResourses('/cart.js');
+        cartData.then(function (res) {
+          var currItem = res.items.find(function (item) {
+            return item.id === +productIdValue;
+          });
+          var newQuantity = currItem ? currItem.quantity + 1 : 1;
+          _this3.updateCartItemAjax(productIdValue, newQuantity);
+        });
+        ajaxCart.style.transform = 'translateX(0)';
+      };
+    }
+  }, {
     key: "initProductQuantityActions",
     value: function initProductQuantityActions() {
-      var _this = this;
-      var quantityWrappers = document.querySelectorAll('.cart__product');
+      var _this4 = this;
+      var quantityWrappers = document.querySelectorAll('.ajax-cart__product');
       quantityWrappers.forEach(function (quantityWrapper) {
-        var quantityButtons = quantityWrapper.querySelectorAll('.cart__product-quantity-button');
+        var quantityButtons = quantityWrapper.querySelectorAll('.ajax-cart__quantity-button');
         var maxQuantity = quantityWrapper.getAttribute('data-max-quantity');
         var variantId = quantityWrapper.getAttribute('data-variant-id');
         quantityButtons.forEach(function (button) {
           button.addEventListener('click', function () {
-            var cartData = _this.getResourses('/cart.js');
+            var cartData = _this4.getResourses('/cart.js');
             cartData.then(function (res) {
               var btnValue = button.getAttribute('data-value');
               var currItem = res.items.find(function (item) {
@@ -22434,11 +22493,11 @@ var App = /*#__PURE__*/function () {
               });
               var newQuantity = currItem.quantity + +btnValue;
               if (+newQuantity > 0 && +newQuantity <= maxQuantity) {
-                _this.updateCartItemAjax(variantId, newQuantity);
+                _this4.updateCartItemAjax(variantId, newQuantity);
               }
               if (+newQuantity === 0) {
-                _this.removeCartItem(variantId).then(function () {
-                  _this.updateAjaxCartData();
+                _this4.removeCartItem(variantId).then(function () {
+                  _this4.updateAjaxCartData();
                   quantityWrapper.remove();
                 });
               }
