@@ -118,7 +118,7 @@ class App {
 		const newProduct = `
 			<li
 				class="ajax-cart__product"
-				data-max-quantity=1
+				data-max-quantity=10
 				data-variant-id=${productData.id}
 			>
 				<div class="ajax-cart__product-logo">
@@ -195,6 +195,7 @@ class App {
 				return;
 			}
 
+			const ajaxCartContainer = document.querySelector('.ajax-cart__container');
 			const ajaxCart = document.querySelector('#ajax-cart');
 			let cartData = this.getResourses('/cart.js');
 
@@ -203,7 +204,11 @@ class App {
 				const newQuantity = currItem ? currItem.quantity + 1 : 1;
  				this.updateCartItemAjax(productIdValue, newQuantity)
 			});
-			ajaxCart.style.transform = 'translateX(0)';
+
+			ajaxCart.style.opacity = '1';
+			ajaxCart.style.visibility = 'visible';
+			ajaxCartContainer.style.transform = 'translateX(0)';
+			document.body.style.overflowY = 'hidden';
 		};
 	}
 

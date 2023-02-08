@@ -160,15 +160,31 @@
 
 <script>
 	const ajaxCartOpener = document.querySelector('.header__good-info-logo');
+	const cartPanelContainer = document.querySelector('.ajax-cart__container');
 	const cartPanel = document.querySelector('#ajax-cart');
+
+	const closeCartPanel = () => {
+		cartPanelContainer.style.transform = 'translateX(100%)';
+		document.body.style.overflowY = 'visible';
+		cartPanel.style.opacity = '0';
+		cartPanel.style.visibility = 'hidden';
+	};
+
+	cartPanel.addEventListener('click', (e) => {
+		if (e.target === cartPanel) {
+			closeCartPanel();
+			cartPanel.classList.toggle('is-opened');
+		}
+	});
 
 	ajaxCartOpener.addEventListener('click', () => {
 		if (cartPanel.classList.contains('is-opened')) {
-			cartPanel.style.transform = 'translateX(100%)';
-			document.body.style.overflowY = 'visible';
+			closeCartPanel();
 		} else {
 			document.body.style.overflowY = 'hidden';
-			cartPanel.style.transform = 'translateX(0)';
+			cartPanelContainer.style.transform = 'translateX(0)';
+			cartPanel.style.opacity = '1';
+			cartPanel.style.visibility = 'visible';
 		}
 		cartPanel.classList.toggle('is-opened');
 	});

@@ -4,18 +4,13 @@
 	z-index: 100;
 	height: calc(100vh - 100%);
 	transition-duration: 0.5s;
-	transform: translateX(100%);
 	background-color: rgba(23,23,23,0.7);
-	opacity: 1;
-
-	@include for-tablet {
-		width: 100%;
-		right: 0;
-		left: 0;
-		margin: 0;
-	}
+	opacity: 0;
+	visibility: hidden;
+	overflow-x: hidden;
 
 	.ajax-cart__container {
+		transform: translateX(100%);
 		position: absolute;
 		margin-left: 1px;
 		right: 0;
@@ -136,6 +131,9 @@
 					object-fit: cover;
 					cursor: pointer;
 				}
+			}
+			.ajax-cart__product:last-child {
+				border-bottom: none;
 			}
 		}
 
