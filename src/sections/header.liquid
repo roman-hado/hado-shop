@@ -165,7 +165,9 @@
 	ajaxCartOpener.addEventListener('click', () => {
 		if (cartPanel.classList.contains('is-opened')) {
 			cartPanel.style.transform = 'translateX(100%)';
+			document.body.style.overflowY = 'visible';
 		} else {
+			document.body.style.overflowY = 'hidden';
 			cartPanel.style.transform = 'translateX(0)';
 		}
 		cartPanel.classList.toggle('is-opened');

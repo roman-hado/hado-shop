@@ -5,6 +5,7 @@
 %}
 
 <div id="ajax-cart">
+	<div class="ajax-cart--bg"></div>
 	<div class="ajax-cart__container">
 		<div class="ajax-cart__title">
 			<h3>Корзина</h3>
@@ -70,5 +71,6 @@
 
 	closeButton.addEventListener('click', () => {
 		ajaxCart.style.transform = 'translateX(100%)';
+		document.body.style.overflowY = 'visible';
 	});
 </script>
