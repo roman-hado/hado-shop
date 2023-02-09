@@ -80,6 +80,10 @@ class App {
 					const cartQty = wrapper.querySelector('[data-cart-qty]');
 					cartQty.innerText = item.quantity;
 				} else {
+					if (quantityWrappers.length === 0) {
+						this.showAjaxCartButtons();
+						this.hideEmptyCartContent();
+					}
 					this.createCartProduct(item);
 				}
 			});
@@ -87,6 +91,10 @@ class App {
 			totalPriceDiv.innerText = subtotalPrice.toLocaleString().replace(',', ' ') + ` грн`;
 			subTotalPriceDiv.innerText = (subtotalPrice + deliveryPrice).toLocaleString().replace(',', ' ') + ` грн`;
 			cartHeaderQty.innerText = cart.item_count;
+
+			if (cart.items.length === 0) {
+				this.hideAjaxCartButtons();
+			}
 		});
 	}
 
@@ -148,6 +156,33 @@ class App {
 		productsList.innerHTML += newProduct;
 		this.initRemoveItemAction();
 		this.initProductQuantityActions();
+	}
+
+	showEmptyCartContent() {
+		const content = document.querySelector('.ajax-cart__empty-cart');
+		const productsList = document.querySelector('.ajax-cart__products-list');
+
+		productsList.style.display = 'none';
+		content.style.display = 'block';
+	}
+
+	hideEmptyCartContent() {
+		const content = document.querySelector('.ajax-cart__empty-cart');
+		const productsList = document.querySelector('.ajax-cart__products-list');
+
+		productsList.style.display = 'block';
+		content.style.display = 'none';
+	}
+
+	hideAjaxCartButtons() {
+		const wrapper = document.querySelector('.ajax-cart__actions');
+		wrapper.style.display = 'none';
+		this.showEmptyCartContent();
+	}
+
+	showAjaxCartButtons() {
+		const wrapper = document.querySelector('.ajax-cart__actions');
+		wrapper.style.display = 'block';
 	}
 
 	initRemoveItemAction() {

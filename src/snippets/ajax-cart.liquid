@@ -1,20 +1,20 @@
 {% liquid
-	assign devivery_price = 6000
-	assign total_price = cart.total_price | money_without_currency | replace: ',', ' ' | remove: '.00'
+	assign devivery_price            = 6000
+	assign total_price               = cart.total_price | money_without_currency | replace: ',', ' ' | remove: '.00'
 	assign total_price_with_delivery = cart.total_price | plus: 6000 | money_without_currency | replace: ',', ' ' | remove: '.00'
+	assign collection_link_text      = section.settings.collection_link_text
 %}
 
 <div id="ajax-cart">
 	<div class="ajax-cart--bg"></div>
-	<div class="ajax-cart__container">
+	<div class="ajax-cart__container {% if cart.items.size == 0 %}justify-start{% endif %}">
 		<div class="ajax-cart__title">
 			<h3>Корзина</h3>
 			<button class="ajax-cart__close-button" type="button">
 				<img src="{{ 'menu-close.svg' | asset_url }}" alt="ajax-cart close">
 			</button>
 		</div>
-
-		<ul class="ajax-cart__products-list">
+		<ul class="ajax-cart__products-list {% if cart.items.size == 0 %}hidden{% endif %}">
 			{% for item in cart.items %}
 				{%	assign item_price = item.price | money_without_trailing_zeros | replace: ',', ' ' %}
 
@@ -45,23 +45,34 @@
 			{% endfor %}
 		</ul>
 
-		<div class="ajax-cart__products-price">
-			<h4>На сумму</h4>
-			<div class="ajax-cart__products-price--count" data-item-total>{{ total_price }} грн</div>
-		</div>
-		<div class="ajax-cart__delivery-price">
-			<h4>Доставка</h4>
-			<div class="ajax-cart__delivery-price--count">60 грн</div>
-		</div>
-		<div class="ajax-cart__total-price">
-			<h4>Итого</h4>
-			<div class="ajax-cart__total-price--count">
-				{{ total_price_with_delivery }} грн
+		<div class="ajax-cart__empty-cart hidden {% if cart.items.size == 0 %}block{% endif %}">
+			<div class="ajax-cart__empty-cart-info">
+				<img src="{{ 'empty-cart.png' | asset_url }}" alt="empty cart icon">
+				<p>Ваш кошик пустий</p>
 			</div>
+
+			<a class="ajax-cart__empty-cart-link" href="/">{{ collection_link_text }}</a>
 		</div>
-		<a href="/checkout" class="ajax-cart__checkout">
-			Оформить заказ
-		</a>
+
+		<div class="ajax-cart__actions {% if cart.items.size == 0 %}hidden{% endif %}">
+			<div class="ajax-cart__products-price">
+				<h4>На сумму</h4>
+				<div class="ajax-cart__products-price--count" data-item-total>{{ total_price }} грн</div>
+			</div>
+			<div class="ajax-cart__delivery-price">
+				<h4>Доставка</h4>
+				<div class="ajax-cart__delivery-price--count">60 грн</div>
+			</div>
+			<div class="ajax-cart__total-price">
+				<h4>Итого</h4>
+				<div class="ajax-cart__total-price--count">
+					{{ total_price_with_delivery }} грн
+				</div>
+			</div>
+			<a href="/checkout" class="ajax-cart__checkout">
+				Оформить заказ
+			</a>
+		</div>
 	</div>
 </div>
 

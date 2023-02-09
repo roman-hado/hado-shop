@@ -30,7 +30,6 @@
 	margin: 0;
 	box-sizing: border-box;
 }
-
 body {
 	font-family: 'Harmonia Sans Pro Cyr', sans-serif;
 	font-weight: 400;
@@ -38,11 +37,18 @@ body {
 	position: relative;
 	overflow-x: hidden;
 }
-
 body:has(.header__nav-icon-toggle:checked) {
 	overflow: hidden;
 }
-
 body:has(.header__nav-icon-toggle:checked) #ajax-cart {
 	transform: translateX(100%) !important;
+}
+.hidden {
+	display: none;
+}
+.block {
+	display: block;
+}
+.justify-start {
+	justify-content: flex-start !important;
 }

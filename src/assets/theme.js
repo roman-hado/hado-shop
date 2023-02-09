@@ -22393,12 +22393,19 @@ var App = /*#__PURE__*/function () {
             var cartQty = wrapper.querySelector('[data-cart-qty]');
             cartQty.innerText = item.quantity;
           } else {
+            if (quantityWrappers.length === 0) {
+              _this.showAjaxCartButtons();
+              _this.hideEmptyCartContent();
+            }
             _this.createCartProduct(item);
           }
         });
         totalPriceDiv.innerText = subtotalPrice.toLocaleString().replace(',', ' ') + " \u0433\u0440\u043D";
         subTotalPriceDiv.innerText = (subtotalPrice + deliveryPrice).toLocaleString().replace(',', ' ') + " \u0433\u0440\u043D";
         cartHeaderQty.innerText = cart.item_count;
+        if (cart.items.length === 0) {
+          _this.hideAjaxCartButtons();
+        }
       });
     }
   }, {
@@ -22430,6 +22437,35 @@ var App = /*#__PURE__*/function () {
       productsList.innerHTML += newProduct;
       this.initRemoveItemAction();
       this.initProductQuantityActions();
+    }
+  }, {
+    key: "showEmptyCartContent",
+    value: function showEmptyCartContent() {
+      var content = document.querySelector('.ajax-cart__empty-cart');
+      var productsList = document.querySelector('.ajax-cart__products-list');
+      productsList.style.display = 'none';
+      content.style.display = 'block';
+    }
+  }, {
+    key: "hideEmptyCartContent",
+    value: function hideEmptyCartContent() {
+      var content = document.querySelector('.ajax-cart__empty-cart');
+      var productsList = document.querySelector('.ajax-cart__products-list');
+      productsList.style.display = 'block';
+      content.style.display = 'none';
+    }
+  }, {
+    key: "hideAjaxCartButtons",
+    value: function hideAjaxCartButtons() {
+      var wrapper = document.querySelector('.ajax-cart__actions');
+      wrapper.style.display = 'none';
+      this.showEmptyCartContent();
+    }
+  }, {
+    key: "showAjaxCartButtons",
+    value: function showAjaxCartButtons() {
+      var wrapper = document.querySelector('.ajax-cart__actions');
+      wrapper.style.display = 'block';
     }
   }, {
     key: "initRemoveItemAction",
