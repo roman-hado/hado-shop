@@ -168,6 +168,9 @@
 		document.body.style.overflowY = 'visible';
 		cartPanel.style.opacity = '0';
 		cartPanel.style.visibility = 'hidden';
+		document.querySelectorAll('.ajax-cart__product').forEach(product => {
+			product.style.transform = 'translateX(-100%)';
+		});
 	};
 
 	cartPanel.addEventListener('click', (e) => {
@@ -181,6 +184,9 @@
 		if (cartPanel.classList.contains('is-opened')) {
 			closeCartPanel();
 		} else {
+			document.querySelectorAll('.ajax-cart__product').forEach(product => {
+				product.style.transform = 'translateX(0)';
+			});
 			document.body.style.overflowY = 'hidden';
 			cartPanelContainer.style.transform = 'translateX(0)';
 			cartPanel.style.opacity = '1';

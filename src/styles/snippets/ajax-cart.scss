@@ -74,7 +74,9 @@
 				justify-content: space-between;
 				border-bottom: 1px solid #E6E6E6;
 				padding: 25px 0;
-
+				transition-duration: 0.6s;
+				transition-delay: 0.2s;
+				transform: translateX(-100%);
 
 				.ajax-cart__product-logo {
 					min-width: 54px;
@@ -172,11 +174,18 @@
 				font-weight: 600;
 				font-size: 16px;
 				letter-spacing: -.2px;
+				transition-duration: 0.3s;
+				border: 1px solid #171717;
 
 				@include for-tablet {
 					height: 40px;
 					margin-top: -40px;
 				}
+			}
+
+			.ajax-cart__empty-cart-link:hover {
+				background-color: #fff;
+				color: $black-primary;
 			}
 		}
 

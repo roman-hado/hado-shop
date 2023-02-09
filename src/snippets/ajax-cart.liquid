@@ -87,5 +87,8 @@
 		ajaxCartContainer.style.transform = 'translateX(100%)';
 		document.body.style.overflowY = 'visible';
 		ajaxCart.classList.toggle('is-opened');
+		document.querySelectorAll('.ajax-cart__product').forEach(product => {
+			product.style.transform = 'translateX(-100%)';
+		});
 	});
 </script>

@@ -127,6 +127,7 @@ class App {
 			<li
 				class="ajax-cart__product"
 				data-max-quantity=10
+				style="transform: translateX(0)"
 				data-variant-id=${productData.id}
 			>
 				<div class="ajax-cart__product-logo">
@@ -192,7 +193,7 @@ class App {
 			deleteItemButton.addEventListener('click', () => {
 				const itemWrapper = deleteItemButton.closest('.ajax-cart__product');
 				const itemId = deleteItemButton.getAttribute('data-variant-id');
-
+				itemWrapper.style.transform = 'translateX(-100%)';
 				this.removeCartItem(itemId)
 					.then(() => {
 						this.updateAjaxCartData();
@@ -244,6 +245,9 @@ class App {
 			ajaxCart.style.visibility = 'visible';
 			ajaxCartContainer.style.transform = 'translateX(0)';
 			document.body.style.overflowY = 'hidden';
+			document.querySelectorAll('.ajax-cart__product').forEach(product => {
+				product.style.transform = 'translateX(0)';
+			});
 		};
 	}
 
