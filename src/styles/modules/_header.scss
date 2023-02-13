@@ -171,6 +171,7 @@ body:has(.header__nav-icon-toggle:checked) .header {
 .header__basket {
 	display: flex;
 	margin-top: 4px;
+	cursor: pointer;
 }
 .header__basket--counter {
 	color: $black-primary;

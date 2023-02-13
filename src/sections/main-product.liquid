@@ -111,8 +111,12 @@
 					<p>Пожалуйста, заполните поле</p>
 				</div>
 				<div class="product__action-buttons">
-					<input class="product__action-button black-button" type="submit" value="Добавить в корзину" />
-					<input class="product__action-button" type="submit" value="Оформить заказ" />
+					<button class="product__action-button black-button" data-add-to-cart data-id="{{ product.selected_or_first_available_variant.id }}">
+						Добавить в корзину
+					</button>
+					<button class="product__action-button">
+						Оформить заказ
+					</button>
 				</div>
 			{% endform %}
 		</div>
@@ -146,7 +150,6 @@
 
 <script type="module">
     import Swiper from 'https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.esm.browser.min.js';
-
 	const productAboutList = document.querySelector('.product__about-list');
 	const productForm = document.querySelector('#product-form');
 	const productId = productForm.querySelector('.product__id');
@@ -154,16 +157,7 @@
 	const variantSku = document.querySelector('.variant__sku');
 	const variantPrice = document.querySelector('.product__price-current');
 	const variantComparePrice = document.querySelector('.product__price-previous');
-
 	let productSelectVariants = document.querySelectorAll('.select__product-item');
-	productForm.onsubmit = (e) => {
-		const productIdValue = productId.value;
-
-		if (productIdValue === 'none') {
-			formErrorAlert.style.display = 'flex';
-			e.preventDefault();
-		}
-	};
 
 	const sideBarSwiper = new Swiper(".mySideBarSwiper", {
 		spaceBetween: 10,
